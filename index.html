@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 전대륙 보스 타임라인 (CV Custom)</title>
+    <style>
+        :root {
+            --bg-color: #0f0f15;
+            --card-bg: #161622;
+            --accent-color: #ff9800;
+            --success-color: #4caf50;
+            --danger-color: #f44336;
+            --text-color: #ffffff;
+            --text-muted: #aaaaaa;
+            --border-color: #252538;
+            --progress-color: #00bcd4;
+            --past-color: #78909c;
+        }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            background: var(--bg-color); 
+            color: var(--text-color); 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+        }
+        .container { 
+            width: 100%; 
+            max-width: 950px; 
+            box-sizing: border-box; 
+            flex: 1;
+        }
+        .header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid var(--border-color);
+        }
+        h1 { margin: 0 0 10px 0; font-size: 24px; color: var(--accent-color); }
+        .clock { font-size: 18px; font-weight: bold; color: #fff; font-variant-numeric: tabular-nums; margin-bottom: 15px; }
+        
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .controls-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .selector-group {
+            display: inline-flex;
+            background: #1f1f30;
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ctrl-btn.active {
+            background: var(--accent-color);
+            color: #000;
+        }
+        .ctrl-btn.lang-active {
+            background: #00bcd4;
+            color: #000;
+        }
+
+        .modal-open-btn {
+            background: #2b2b40;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .modal-open-btn:hover {
+            background: #3b3b55;
+            border-color: var(--accent-color);
+        }
+        .past-log-btn {
+            background: #372a3a;
+        }
+        .past-log-btn:hover {
+            background: #4a3550;
+            border-color: #9c27b0;
+        }
+
+        .board-header {
+            display: grid;
+            grid-template-columns: 1.2fr 2fr 1.8fr 1.3fr 2fr;
+            padding: 12px 16px;
+            background: #1f1f30;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+            font-size: 14px;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+        }
+        .boss-list {
+            background: var(--card-bg);
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 8px 32 rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+        .boss-row {
+            display: grid;
+            grid-template-columns: 1.2fr 2fr 1.8fr 1.3fr 2fr;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            align-items: center;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+        .boss-row:last-child { border-bottom: none; }
+        
+        .type-badge {
+            display: inline-block;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        .badge-w1 { background-color: #2e7d32; color: #e8f5e9; }
+        .badge-w2 { background-color: #1565c0; color: #e3f2fd; }
+        .badge-w3 { background-color: #00838f; color: #e0f7fa; }
+        .badge-w4 { background-color: #1dd817; color: #e0f7fa; }
+        .badge-w5 { background-color: #ad1457; color: #fce4ec; }
+        .badge-w6 { background-color: #6a1b9a; color: #f3e5f5; }
+        .badge-w7 { background-color: #d84315; color: #fbe9e7; }
+        .badge-w8 { background-color: #fa04fa; color: #fbe9e7; }
+        .badge-l1w1 { background-color: #e65100; color: #fff3e0; border: 1px solid #ffb74d; }
+        .badge-l1w2 { background-color: #37474f; color: #eceff1; border: 1px solid #90a4ae; }
+        
+        .map-name { color: #cfd8dc; font-weight: 500; }
+        .boss-name { color: #fff; font-weight: bold; }
+        .spawn-time { color: var(--accent-color); font-weight: bold; font-variant-numeric: tabular-nums; }
+        .countdown { font-weight: bold; text-align: right; font-variant-numeric: tabular-nums; color: var(--success-color); }
+        
+        .imminent-row { background: rgba(244, 67, 54, 0.08); }
+        .imminent-row .countdown { color: var(--danger-color); animation: blink 1s infinite alternate; }
+        
+        .progress-row { background: rgba(0, 188, 212, 0.12); border-left: 4px solid var(--progress-color); }
+        .progress-row .countdown { color: var(--progress-color); font-weight: 900; }
+        
+        @keyframes blink { from { opacity: 1; } to { opacity: 0.5; } }
+
+        /* 모달 공통 스타일 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background: #1a1a26;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 850px;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-header h2 { margin: 0; font-size: 18px; color: var(--accent-color); }
+        .modal-close-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            font-size: 24px; cursor: pointer; line-height: 1;
+        }
+        .modal-close-btn:hover { color: #fff; }
+        .modal-body { padding: 20px; overflow-y: auto; }
+        
+        .table-all { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .table-all th { background: #232335; color: var(--text-muted); padding: 10px; text-align: left; font-weight: 600; }
+        .table-all td { padding: 12px 10px; border-bottom: 1px solid #222232; vertical-align: middle; }
+        .intervals-wrapper { display: flex; flex-wrap: wrap; gap: 6px; color: #ccc; }
+        .interval-tag { background: #252538; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+        
+        /* 📜 지난 보스 기록 전용 텍스트 스타일 */
+        .text-past-time { color: var(--past-color); font-weight: 500; font-family: monospace; }
+
+        .footer {
+            text-align: center;
+            padding: 24px 0;
+            font-size: 13px;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 950px;
+            letter-spacing: 0.5px;
+        }
+        .footer .creator-accent {
+            font-weight: 800;
+            color: #00bcd4;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+            padding: 0 4px;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
+        }
+        .footer:hover .creator-accent {
+            color: var(--accent-color);
+            text-shadow: 0 0 12px rgba(255, 152, 0, 0.7);
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1 id="main-title">⏱️ 전대륙 보스 실시간 전광판</h1>
+        <div class="clock" id="live-clock">현재 시간: --:--:--</div>
+        
+        <div class="controls-container">
+            <div class="controls-row">
+                <div class="selector-group">
+                    <button class="ctrl-btn active" id="btn-asia" onclick="setTimezone('ASIA')">ASIA (UTC+8)</button>
+                    <button class="ctrl-btn" id="btn-kor" onclick="setTimezone('KOR')">KOR (UTC+9)</button>
+                </div>
+                <div class="selector-group">
+                    <button class="ctrl-btn lang-active" id="btn-lang-ko" onclick="setLanguage('KO')">한글 (KOR)</button>
+                    <button class="ctrl-btn" id="btn-lang-en" onclick="setLanguage('EN')">English (ENG)</button>
+                </div>
+                <button class="modal-open-btn past-log-btn" id="btn-view-past" onclick="openPastModal()">📜 지난 보스 기록</button>
+                <button class="modal-open-btn" id="btn-view-table" onclick="openModal()">📅 전체 시간표 보기</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="board-header">
+        <div id="th-type">구분</div>
+        <div id="th-map">지역</div>
+        <div id="th-boss">보스명</div>
+        <div id="th-time">등장 시간</div>
+        <div id="th-countdown" style="text-align: right;">남은 시간</div>
+    </div>
+    <div class="boss-list" id="boss-board"></div>
+</div>
+
+<!-- 전체 시간표 모달 -->
+<div class="modal" id="timetable-modal" onclick="closeModalViaBg(event, 'timetable-modal')">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="modal-title">📅 전대륙 보스 24시간 전체 시간표</h2>
+            <button class="modal-close-btn" onclick="closeModal('timetable-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-all">
+                <thead>
+                    <tr>
+                        <th style="width: 15%" id="mth-type">구분</th>
+                        <th style="width: 28%" id="mth-map">지역</th>
+                        <th style="width: 22%" id="mth-boss">보스명</th>
+                        <th style="width: 35%" id="mth-schedule">하루 출현 스케줄 전체</th>
+                    </tr>
+                </thead>
+                <tbody id="modal-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- 지난 보스 기록 모달 -->
+<div class="modal" id="past-modal" onclick="closeModalViaBg(event, 'past-modal')">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="past-modal-title">📜 최근 등장한 지난 보스 기록 (최근 1시간 내)</h2>
+            <button class="modal-close-btn" onclick="closeModal('past-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table class="table-all">
+                <thead>
+                    <tr>
+                        <th style="width: 15%" id="pth-type">구분</th>
+                        <th style="width: 30%" id="pth-map">지역</th>
+                        <th style="width: 25%" id="pth-boss">보스명</th>
+                        <th style="width: 30%" id="pth-time">등장 시간 및 경과</th>
+                    </tr>
+                </thead>
+                <tbody id="past-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <span id="footer-text">Designed & Developed by</span> 
+    <span class="creator-accent">CV</span> 
+    <span>© 2026 All Rights Reserved.</span>
+</footer>
+
+<script>
+    let currentZone = 'ASIA';
+    let currentLang = 'KO';
+
+    const i18n = {
+        KO: {
+            title: "⏱️ 전대륙 보스 실시간 전광판", clock: "현재 시간", viewTable: "📅 전체 시간표 보기", viewPast: "📜 지난 보스 기록",
+            thType: "구분", thMap: "지역", thBoss: "보스명", thTime: "등장 시간", thCountdown: "남은 시간",
+            modalTitle: "📅 전대륙 보스 24시간 전체 시간표", mthSchedule: "하루 출현 스케줄 전체",
+            pastModalTitle: "📜 최근 등장한 지난 보스 기록 (최근 1시간 내)",
+            hour: "시간 ", min: "분 ", sec: "초", ago: "분 전 등장",
+            footer: "제작 및 디자인 :", inProgress: "⚔️ 진행중 (+5분)"
+        },
+        EN: {
+            title: "⏱️ Continent Boss Live Dashboard", clock: "Current Time", viewTable: "📅 View Full Timetable", viewPast: "📜 Past Boss Log",
+            thType: "Type", thMap: "Map Location", thBoss: "Boss Name", thTime: "Spawn Time", thCountdown: "Time Remaining",
+            modalTitle: "📅 Continent Boss 24-Hour Full Timetable", mthSchedule: "Full Daily Spawn Schedule",
+            pastModalTitle: "📜 Past Boss Records (Within Last 1 Hour)",
+            hour: "h ", min: "m ", sec: "s", ago: "m ago spawned",
+            footer: "Designed & Developed by", inProgress: "⚔️ In Progress (+5m)"
+        }
+    };
+
+    const bossData = [
+        { type: "w1", mapKo: "우면숲", mapEn: "Bullface Forest", bossKo: "마타", bossEn: "Mata", intervals: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0] },
+        { type: "w1", mapKo: "우마신전 1층", mapEn: "Demon Bull Temple 1F", bossKo: "우뢰", bossEn: "Boltox", intervals: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23] },
+        { type: "w1", mapKo: "우면귀왕의성소", mapEn: "Bullface Fiend King's Sanctuary", bossKo: "우면귀왕", bossEn: "Bullface Fiend King", intervals: [3, 6, 9, 12, 15, 18, 21, 0] },
+        { type: "w8", mapKo: "백귀봉인진", mapEn: "Whitemaur Sealing Circle", bossKo: "여의황", bossEn: "Yeo Wihuang", intervals: [1, 5, 9, 13, 17, 21] },
+        { type: "w7", mapKo: "태휼의 정원", mapEn: "Taehyuls Garden", bossKo: "태홀", bossEn: "Taehyul", intervals: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23] },
+        { type: "w7", mapKo: "마교본관", mapEn: "Demonic Cult Main Hall", bossKo: "이은", bossEn: "Yiun", intervals: [2, 5, 8, 11, 14, 17, 20, 23] },
+        { type: "w4", mapKo: "몽촌사막", mapEn: "Phantasia Desert", bossKo: "오마부동존", bossEn: "Nefariox Obdurate Zenith", intervals: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0] },
+        { type: "w4", mapKo: "패왕봉인진", mapEn: "Overlord Sealing Circle", bossKo: "쿠릴라이카", bossEn: "Kurilaica", intervals: [3, 6, 9, 12, 15, 18, 21, 0] },
+        { type: "w2", mapKo: "적월산", mapEn: "Redmoon Mountain", bossKo: "주휘", bossEn: "Juhui", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
+        { type: "w5", mapKo: "사북장벽", mapEn: "Great Sabuk Wall Camp", bossKo: "파륙", bossEn: "Faluk", intervals: [3.5, 6.5, 9.5, 12, 15.5, 18.5, 21.5, 0] },
+        { type: "w5", mapKo: "환영신전", mapEn: "Illusion Temple", bossKo: "불액귀", bossEn: "Tale Warper Fiend", intervals: [1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5] },
+        { type: "w3", mapKo: "사요평원", mapEn: "Viperbeast Plain", bossKo: "흑치마제", bossEn: "Dusk Armado Emperor", intervals: [1.5, 3.5, 5.5, 7.5, 9.5, 11.5, 13.5, 15.5, 17.5, 19.5, 21.5, 23.5] },
+        { type: "w3", mapKo: "석각묘", mapEn: "Rockcut Tomb", bossKo: "마라", bossEn: "Mara", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
+        { type: "w3", mapKo: "오마무덤", mapEn: "Nefariox Necropolis", bossKo: "무덤괴수 교", bossEn: "Tombbeast Gyo", intervals: [2.5, 8.5, 14.5, 20.5] },
+        { type: "w3", mapKo: "석각묘 ", mapEn: "Rockcut Tomb", bossKo: "부두", bossEn: "Boodo", intervals: [3.5, 9.5, 15.5, 21.5] },
+        { type: "w6", mapKo: "비전현", mapEn: "Bicheon Town", bossKo: "철목강", bossEn: "Cheol Mokgang", intervals: [2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 0.5] },
+        { type: "w6", mapKo: "마인광산", mapEn: "Demoniac Mine", bossKo: "홍염", bossEn: "Hong Yeo", intervals: [1.5, 3.5, 5.5, 7.5, 9.5, 11.5, 13.5, 15.5, 17.5, 19.5, 21.5, 23.5] },
+        { type: "w6", mapKo: "비전현 ", mapEn: "Bicheon Town", bossKo: "비천수라", bossEn: "Bicheon Sura", intervals: [4.5, 10.5, 16.5, 22.5] },
+        { type: "w6", mapKo: "환목림", mapEn: "Phantom Woods", bossKo: "위한", bossEn: "Wuihan", intervals: [5.5, 11.5, 17.5, 23.5] },
+        { type: "w6", mapKo: "비전미궁", mapEn: "Bicheon Labyrinth", bossKo: "몽코", bossEn: "Obscene Yeticlops", intervals: [6.5, 12.5, 18.5, 0.5] },
+        { type: "layer 1- W1", mapKo: "운서현 (L1)", mapEn: "Unseo Town (L1)", bossKo: "지화", bossEn: "Jihwa", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
+        { type: "layer 1- W1", mapKo: "칠곡산 (L1)", mapEn: "Seven Valleys Mountain (L1)", bossKo: "흑갑거치", bossEn: "Black Carapace Dusk Armado", intervals: [3.5, 6.5, 9.5, 12.5, 15.5, 18.5, 21.5, 0.5] },
+        { type: "layer 1- W1", mapKo: "칠곡산 (L1) ", mapEn: "Seven Valleys Mountain (L1)", bossKo: "야목차", bossEn: "Nighteyes Yaksha", intervals: [3.5, 9.5, 15.5, 21.5] },
+        { type: "layer 1- W1", mapKo: "열화도 (L1)", mapEn: "Roaring Flame Island (L1)", bossKo: "불후", bossEn: "Bulhu", intervals: [4.5, 10.5, 16.5, 22.5] },
+        { type: "layer 1- W2", mapKo: "구룡빙원 (L1)", mapEn: "Dragon ICE Field (L1)", bossKo: "괴무강", bossEn: "Guemugwang", intervals: [5.5, 11.5, 17.5, 23.5] },
+        { type: "layer 1- W2", mapKo: "지하 감옥 (L1)", mapEn: "UnderGround Jail (L1)", bossKo: "도맹룡", bossEn: "Do Maeongryong", intervals: [6.5, 12.5, 18.5, 0.5] },
+        { type: "layer 1- W2", mapKo: "지하 감옥 (L1) ", mapEn: "UnderGround Jail (L1)", bossKo: "몰그라쉬", bossEn: "Molgrash", intervals: [1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5] },
+        { type: "layer 1- W2", mapKo: "구룡궁 (L1)", mapEn: "Dragon Palace (L1)", bossKo: "위광령", bossEn: "Wi Gwangryeong", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] }
+    ];
+
+    function setTimezone(zone) {
+        currentZone = zone;
+        document.getElementById('btn-asia').classList.toggle('active', zone === 'ASIA');
+        document.getElementById('btn-kor').classList.toggle('active', zone === 'KOR');
+        updateDashboard();
+        if(document.getElementById('timetable-modal').style.display === 'flex') renderFullTimetable();
+        if(document.getElementById('past-modal').style.display === 'flex') renderPastTimetable();
+    }
+
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.getElementById('btn-lang-ko').classList.toggle('lang-active', lang === 'KO');
+        document.getElementById('btn-lang-en').classList.toggle('lang-active', lang === 'EN');
+        
+        const t = i18n[lang];
+        document.getElementById('main-title').innerText = t.title;
+        document.getElementById('btn-view-table').innerText = t.viewTable;
+        document.getElementById('btn-view-past').innerText = t.viewPast;
+        document.getElementById('th-type').innerText = t.thType;
+        document.getElementById('th-map').innerText = t.thMap;
+        document.getElementById('th-boss').innerText = t.thBoss;
+        document.getElementById('th-time').innerText = t.thTime;
+        document.getElementById('th-countdown').innerText = t.thCountdown;
+        
+        document.getElementById('mth-type').innerText = t.thType;
+        document.getElementById('mth-map').innerText = t.thMap;
+        document.getElementById('mth-boss').innerText = t.thBoss;
+        document.getElementById('mth-schedule').innerText = t.mthSchedule;
+
+        document.getElementById('pth-type').innerText = t.thType;
+        document.getElementById('pth-map').innerText = t.thMap;
+        document.getElementById('pth-boss').innerText = t.thBoss;
+        document.getElementById('pth-time').innerText = `${t.thTime} & Gap`;
+
+        document.getElementById('footer-text').innerText = t.footer;
+
+        updateDashboard();
+        if(document.getElementById('timetable-modal').style.display === 'flex') renderFullTimetable();
+        if(document.getElementById('past-modal').style.display === 'flex') renderPastTimetable();
+    }
+
+    function formatTimeLabel(hourDecimal) {
+        let h = Math.floor(hourDecimal);
+        let m = Math.round((hourDecimal % 1) * 60);
+        if (h >= 24) h -= 24;
+        return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+
+    function getBadgeClass(type) {
+        const cleanType = type.toLowerCase().trim();
+        if (cleanType === 'w1') return 'badge-w1';
+        if (cleanType === 'w2') return 'badge-w2';
+        if (cleanType === 'w3') return 'badge-w3';
+        if (cleanType === 'w4') return 'badge-w4';
+        if (cleanType === 'w5') return 'badge-w5';
+        if (cleanType === 'w6') return 'badge-w6';
+        if (cleanType === 'w7') return 'badge-w7';
+        if (cleanType === 'w8') return 'badge-w8';
+        if (cleanType.includes('layer 1- w1')) return 'badge-l1w1';
+        if (cleanType.includes('layer 1- w2')) return 'badge-l1w2';
+        return '';
+    }
+
+    // 모달 제어 핸들러
+    function openModal() { document.getElementById('timetable-modal').style.display = 'flex'; renderFullTimetable(); }
+    function openPastModal() { document.getElementById('past-modal').style.display = 'flex'; renderPastTimetable(); }
+    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function closeModalViaBg(e, id) { if(e.target.id === id) closeModal(id); }
+
+    function renderFullTimetable() {
+        const t = i18n[currentLang];
+        document.getElementById('modal-title').innerText = `${t.modalTitle} (${currentZone})`;
+        const bodyContainer = document.getElementById('modal-table-body');
+        bodyContainer.innerHTML = '';
+
+        bossData.forEach(item => {
+            const adjustedIntervals = item.intervals.map(time => {
+                let adjusted = currentZone === 'KOR' ? time + 1 : time;
+                return adjusted >= 24 ? adjusted - 24 : adjusted;
+            });
+            adjustedIntervals.sort((a, b) => a - b);
+
+            const tr = document.createElement('tr');
+            const customColorClass = getBadgeClass(item.type);
+
+            let tagsHtml = '';
+            adjustedIntervals.forEach(timeVal => {
+                tagsHtml += `<span class="interval-tag">${formatTimeLabel(timeVal)}</span>`;
+            });
+
+            tr.innerHTML = `
+                <td><span class="type-badge ${customColorClass}">${item.type}</span></td>
+                <td class="map-name">${currentLang === 'KO' ? item.mapKo : item.mapEn}</td>
+                <td class="boss-name">${currentLang === 'KO' ? item.bossKo : item.bossEn}</td>
+                <td><div class="intervals-wrapper">${tagsHtml}</div></td>
+            `;
+            bodyContainer.appendChild(tr);
+        });
+    }
+
+    // 🌟 지난 보스 기록(모달) 렌더링 로직
+    function renderPastTimetable() {
+        const t = i18n[currentLang];
+        document.getElementById('past-modal-title').innerText = `${t.pastModalTitle} (${currentZone})`;
+        const bodyContainer = document.getElementById('past-table-body');
+        bodyContainer.innerHTML = '';
+
+        const now = new Date();
+        const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+        const currentSelectedTotalHours = utcHours + (currentZone === 'ASIA' ? 8 : 9);
+
+        const pastLogs = [];
+
+        bossData.forEach(item => {
+            const adjustedIntervals = item.intervals.map(time => {
+                let adjusted = currentZone === 'KOR' ? time + 1 : time;
+                return adjusted >= 24 ? adjusted - 24 : adjusted;
+            });
+
+            adjustedIntervals.forEach(timeVal => {
+                let diffFromSpawn = currentSelectedTotalHours - timeVal;
+                // 자정 경계 오차 보정
+                if (currentSelectedTotalHours < 2 && timeVal > 22) {
+                    diffFromSpawn = (currentSelectedTotalHours + 24) - timeVal;
+                } else if (currentSelectedTotalHours > 22 && timeVal < 2) {
+                    diffFromSpawn = currentSelectedTotalHours - (timeVal + 24);
+                }
+
+                // 최근 1시간(60분) 이내에 나타났던 보스 기록 수집 (진행중인 5분도 과거 기록에 포함)
+                if (diffFromSpawn >= 0 && diffFromSpawn <= 1.0) {
+                    const minutesAgo = Math.floor(diffFromSpawn * 60);
+                    pastLogs.push({
+                        type: item.type,
+                        map: currentLang === 'KO' ? item.mapKo : item.mapEn,
+                        boss: currentLang === 'KO' ? item.bossKo : item.bossEn,
+                        spawnTimeLabel: formatTimeLabel(timeVal),
+                        minutesAgo: minutesAgo
+                    });
+                }
+            });
+        });
+
+        // 가장 최근에 나타난 순서대로 역순 정렬 (0분 전인 것이 최상단으로)
+        pastLogs.sort((a, b) => a.minutesAgo - b.minutesAgo);
+
+        if (pastLogs.length === 0) {
+            bodyContainer.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:30px;">최근 1시간 내 등장한 보스가 없습니다.</td></tr>`;
+            return;
+        }
+
+        pastLogs.forEach(log => {
+            const tr = document.createElement('tr');
+            const customColorClass = getBadgeClass(log.type);
+
+            tr.innerHTML = `
+                <td><span class="type-badge ${customColorClass}">${log.type}</span></td>
+                <td class="map-name">${log.map}</td>
+                <td class="boss-name">${log.boss}</td>
+                <td class="text-past-time">${log.spawnTimeLabel} <span style="color:var(--accent-color); font-size:12px; margin-left:8px;">(${log.minutesAgo}${t.ago})</span></td>
+            `;
+            bodyContainer.appendChild(tr);
+        });
+    }
+
+    function updateDashboard() {
+        const now = new Date();
+        const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+        
+        let targetClockTotalHours = utcHours + (currentZone === 'ASIA' ? 8 : 9);
+        if (targetClockTotalHours >= 24) targetClockTotalHours -= 24;
+        
+        const t = i18n[currentLang];
+        document.getElementById('live-clock').innerText = `${t.clock} (${currentZone}): ${formatTimeLabel(targetClockTotalHours)}:${String(now.getUTCSeconds()).padStart(2, '0')}`;
+
+        const currentSelectedTotalHours = utcHours + (currentZone === 'ASIA' ? 8 : 9);
+        const timeline = [];
+
+        bossData.forEach(item => {
+            const adjustedIntervals = item.intervals.map(time => {
+                let adjusted = currentZone === 'KOR' ? time + 1 : time;
+                return adjusted >= 24 ? adjusted - 24 : adjusted;
+            });
+
+            adjustedIntervals.sort((a, b) => a - b);
+
+            let nextSpawnVal = null;
+            let isNextDay = false;
+            let isCurrentlyActive = false;
+            let activeSpawnVal = null;
+
+            for (let timeVal of adjustedIntervals) {
+                let diffFromSpawn = currentSelectedTotalHours - timeVal;
+                if (currentSelectedTotalHours < 1 && timeVal > 23) {
+                    diffFromSpawn = (currentSelectedTotalHours + 24) - timeVal;
+                }
+                
+                if (diffFromSpawn >= 0 && diffFromSpawn <= (5 / 60)) {
+                    isCurrentlyActive = true;
+                    activeSpawnVal = timeVal;
+                    nextSpawnVal = timeVal;
+                    break;
+                }
+            }
+
+            if (!isCurrentlyActive) {
+                for (let timeVal of adjustedIntervals) {
+                    if (timeVal > currentSelectedTotalHours) {
+                        nextSpawnVal = timeVal;
+                        break;
+                    }
+                }
+
+                if (nextSpawnVal === null) {
+                    nextSpawnVal = adjustedIntervals[0];
+                    isNextDay = true;
+                }
+            }
+
+            let diffMs = 0;
+            if (isCurrentlyActive) {
+                diffMs = -1000000000 + ((currentSelectedTotalHours - activeSpawnVal) * 60 * 60 * 1000);
+            } else {
+                let diffHours = nextSpawnVal - currentSelectedTotalHours;
+                if (isNextDay) diffHours += 24;
+                if (diffHours < 0) diffHours += 24;
+                diffMs = diffHours * 60 * 60 * 1000;
+            }
+
+            timeline.push({
+                type: item.type,
+                map: currentLang === 'KO' ? item.mapKo : item.mapEn,
+                boss: currentLang === 'KO' ? item.bossKo : item.bossEn,
+                spawnTimeLabel: formatTimeLabel(nextSpawnVal),
+                diff: diffMs,
+                isActive: isCurrentlyActive
+            });
+        });
+
+        timeline.sort((a, b) => a.diff - b.diff);
+
+        const boardContainer = document.getElementById('boss-board');
+        boardContainer.innerHTML = '';
+
+        timeline.forEach(item => {
+            const row = document.createElement('div');
+            row.className = 'boss-row';
+            
+            let countdownText = '';
+
+            if (item.isActive) {
+                row.className += ' progress-row';
+                countdownText = t.inProgress;
+            } else {
+                const hoursLeft = Math.floor(item.diff / (1000 * 60 * 60));
+                const minutesLeft = Math.floor((item.diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secondsLeft = Math.floor((item.diff % (1000 * 60)) / 1000);
+
+                if (item.diff < 10 * 60 * 1000) {
+                    row.className += ' imminent-row';
+                }
+                countdownText = `${hoursLeft}${t.hour}${minutesLeft}${t.min}${secondsLeft}${t.sec}`;
+            }
+
+            const customColorClass = getBadgeClass(item.type);
+
+            row.innerHTML = `
+                <div><span class="type-badge ${customColorClass}">${item.type}</span></div>
+                <div class="map-name">${item.map}</div>
+                <div class="boss-name">${item.boss}</div>
+                <div class="spawn-time">${item.spawnTimeLabel}</div>
+                <div class="countdown">${countdownText}</div>
+            `;
+            boardContainer.appendChild(row);
+        });
+
+        // 실시간으로 지난 보스 기록 창이 열려있다면 내부 테이블 스케줄 데이터도 매 초 같이 리프레시 갱신
+        if (document.getElementById('past-modal').style.display === 'flex') {
+            renderPastTimetable();
+        }
+    }
+
+    setInterval(updateDashboard, 1000);
+    updateDashboard();
+</script>
+</body>
+</html>
