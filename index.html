@@ -124,7 +124,7 @@
         .boss-list {
             background: var(--card-bg);
             border-radius: 0 0 8px 8px;
-            box-shadow: 0 8px 32 rgba(0,0,0,0.4);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
             border: 1px solid var(--border-color);
             overflow: hidden;
             margin-bottom: 40px;
@@ -153,11 +153,11 @@
         .badge-w1 { background-color: #2e7d32; color: #e8f5e9; }
         .badge-w2 { background-color: #1565c0; color: #e3f2fd; }
         .badge-w3 { background-color: #00838f; color: #e0f7fa; }
-        .badge-w4 { background-color: #1dd817; color: #e0f7fa; }
+        .badge-w4 { background-color: #0288d1; color: #e1f5fe; }
         .badge-w5 { background-color: #ad1457; color: #fce4ec; }
         .badge-w6 { background-color: #6a1b9a; color: #f3e5f5; }
         .badge-w7 { background-color: #d84315; color: #fbe9e7; }
-        .badge-w8 { background-color: #fa04fa; color: #fbe9e7; }
+        .badge-w8 { background-color: #1a237e; color: #e8eaf6; border: 1px solid #ffd700; }
         .badge-l1w1 { background-color: #e65100; color: #fff3e0; border: 1px solid #ffb74d; }
         .badge-l1w2 { background-color: #37474f; color: #eceff1; border: 1px solid #90a4ae; }
         
@@ -174,7 +174,6 @@
         
         @keyframes blink { from { opacity: 1; } to { opacity: 0.5; } }
 
-        /* 모달 공통 스타일 */
         .modal {
             display: none;
             position: fixed;
@@ -218,7 +217,6 @@
         .intervals-wrapper { display: flex; flex-wrap: wrap; gap: 6px; color: #ccc; }
         .interval-tag { background: #252538; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
         
-        /* 📜 지난 보스 기록 전용 텍스트 스타일 */
         .text-past-time { color: var(--past-color); font-weight: 500; font-family: monospace; }
 
         .footer {
@@ -356,6 +354,7 @@
         }
     };
 
+    // 원본 간격 데이터 (항상 ASIA UTC+8 기준 고정)
     const bossData = [
         { type: "w1", mapKo: "우면숲", mapEn: "Bullface Forest", bossKo: "마타", bossEn: "Mata", intervals: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 0] },
         { type: "w1", mapKo: "우마신전 1층", mapEn: "Demon Bull Temple 1F", bossKo: "우뢰", bossEn: "Boltox", intervals: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23] },
@@ -367,14 +366,14 @@
         { type: "w4", mapKo: "패왕봉인진", mapEn: "Overlord Sealing Circle", bossKo: "쿠릴라이카", bossEn: "Kurilaica", intervals: [3, 6, 9, 12, 15, 18, 21, 0] },
         { type: "w2", mapKo: "적월산", mapEn: "Redmoon Mountain", bossKo: "주휘", bossEn: "Juhui", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
         { type: "w5", mapKo: "사북장벽", mapEn: "Great Sabuk Wall Camp", bossKo: "파륙", bossEn: "Faluk", intervals: [3.5, 6.5, 9.5, 12, 15.5, 18.5, 21.5, 0] },
-        { type: "w5", mapKo: "환영신전", mapEn: "Illusion Temple", bossKo: "불역귀", bossEn: "Tale Warper Fiend", intervals: [1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5] },
+        { type: "w5", mapKo: "환영신전", mapEn: "Illusion Temple", bossKo: "불액귀", bossEn: "Tale Warper Fiend", intervals: [1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5] },
         { type: "w3", mapKo: "사요평원", mapEn: "Viperbeast Plain", bossKo: "흑치마제", bossEn: "Dusk Armado Emperor", intervals: [1.5, 3.5, 5.5, 7.5, 9.5, 11.5, 13.5, 15.5, 17.5, 19.5, 21.5, 23.5] },
         { type: "w3", mapKo: "석각묘", mapEn: "Rockcut Tomb", bossKo: "마라", bossEn: "Mara", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
         { type: "w3", mapKo: "오마무덤", mapEn: "Nefariox Necropolis", bossKo: "무덤괴수 교", bossEn: "Tombbeast Gyo", intervals: [2.5, 8.5, 14.5, 20.5] },
-        { type: "w3", mapKo: "석각묘 ", mapEn: "Rockcut Tomb", bossKo: "부두", bossEn: "Boodo", intervals: [3.5, 9.5, 15.5, 21.5] },
-        { type: "w6", mapKo: "비천현", mapEn: "Bicheon Town", bossKo: "철목강", bossEn: "Cheol Mokgang", intervals: [2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 0.5] },
+        { type: "w3", mapKo: "석각묘 ", mapEn: "Rockcut Tomb", bossKo: "Boodo", intervals: [3.5, 9.5, 15.5, 21.5] },
+        { type: "w6", mapKo: "비전현", mapEn: "Bicheon Town", bossKo: "철목강", bossEn: "Cheol Mokgang", intervals: [2.5, 4.5, 6.5, 8.5, 10.5, 12.5, 14.5, 16.5, 18.5, 20.5, 22.5, 0.5] },
         { type: "w6", mapKo: "마인광산", mapEn: "Demoniac Mine", bossKo: "홍염", bossEn: "Hong Yeo", intervals: [1.5, 3.5, 5.5, 7.5, 9.5, 11.5, 13.5, 15.5, 17.5, 19.5, 21.5, 23.5] },
-        { type: "w6", mapKo: "비천현 ", mapEn: "Bicheon Town", bossKo: "비천수라", bossEn: "Bicheon Sura", intervals: [4.5, 10.5, 16.5, 22.5] },
+        { type: "w6", mapKo: "비전현 ", mapEn: "Bicheon Town", bossKo: "비천수라", bossEn: "Bicheon Sura", intervals: [4.5, 10.5, 16.5, 22.5] },
         { type: "w6", mapKo: "환목림", mapEn: "Phantom Woods", bossKo: "위한", bossEn: "Wuihan", intervals: [5.5, 11.5, 17.5, 23.5] },
         { type: "w6", mapKo: "비전미궁", mapEn: "Bicheon Labyrinth", bossKo: "몽코", bossEn: "Obscene Yeticlops", intervals: [6.5, 12.5, 18.5, 0.5] },
         { type: "layer 1- W1", mapKo: "운서현 (L1)", mapEn: "Unseo Town (L1)", bossKo: "지화", bossEn: "Jihwa", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
@@ -386,6 +385,25 @@
         { type: "layer 1- W2", mapKo: "지하 감옥 (L1) ", mapEn: "UnderGround Jail (L1)", bossKo: "몰그라쉬", bossEn: "Molgrash", intervals: [1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5] },
         { type: "layer 1- W2", mapKo: "구룡궁 (L1)", mapEn: "Dragon Palace (L1)", bossKo: "위광령", bossEn: "Wi Gwangryeong", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] }
     ];
+
+    // 🛠️ 타임존 문자열 맵 (정밀 분석용 핵심 함수)
+    function getTargetTimeZoneStr() {
+        return currentZone === 'ASIA' ? 'Asia/Hong_Kong' : 'Asia/Seoul';
+    }
+
+    // 특정 타임존 기준의 절대 Date 객체를 만드는 함수
+    function getZonedDate(baseDate, tzString) {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: tzString, year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: 'numeric', minute: 'numeric', second: 'numeric', hour12: false
+        });
+        const parts = formatter.formatToParts(baseDate);
+        const map = {};
+        parts.forEach(p => { if(p.type !== 'literal') map[p.type] = p.value; });
+        
+        return new Date(map.year, map.month - 1, map.day, map.hour, map.minute, map.second);
+    }
+
     function setTimezone(zone) {
         currentZone = zone;
         document.getElementById('btn-asia').classList.toggle('active', zone === 'ASIA');
@@ -419,7 +437,6 @@
         document.getElementById('pth-map').innerText = t.thMap;
         document.getElementById('pth-boss').innerText = t.thBoss;
         document.getElementById('pth-time').innerText = `${t.thTime} & Gap`;
-
         document.getElementById('footer-text').innerText = t.footer;
 
         updateDashboard();
@@ -449,12 +466,12 @@
         return '';
     }
 
-    // 모달 제어 핸들러
     function openModal() { document.getElementById('timetable-modal').style.display = 'flex'; renderFullTimetable(); }
     function openPastModal() { document.getElementById('past-modal').style.display = 'flex'; renderPastTimetable(); }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function closeModalViaBg(e, id) { if(e.target.id === id) closeModal(id); }
 
+    // 📅 전체 시간표 렌더링 수정
     function renderFullTimetable() {
         const t = i18n[currentLang];
         document.getElementById('modal-title').innerText = `${t.modalTitle} (${currentZone})`;
@@ -462,6 +479,7 @@
         bodyContainer.innerHTML = '';
 
         bossData.forEach(item => {
+            // KOR 타임존 선택 시에만 출력 시간을 1시간 보정하여 정렬
             const adjustedIntervals = item.intervals.map(time => {
                 let adjusted = currentZone === 'KOR' ? time + 1 : time;
                 return adjusted >= 24 ? adjusted - 24 : adjusted;
@@ -486,17 +504,18 @@
         });
     }
 
-    // 🌟 지난 보스 기록(모달) 렌더링 로직
+    // 📜 지난 보스 기록 렌더링 수정
     function renderPastTimetable() {
         const t = i18n[currentLang];
         document.getElementById('past-modal-title').innerText = `${t.pastModalTitle} (${currentZone})`;
         const bodyContainer = document.getElementById('past-table-body');
         bodyContainer.innerHTML = '';
 
-        const now = new Date();
-        const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
-        const currentSelectedTotalHours = utcHours + (currentZone === 'ASIA' ? 8 : 9);
-
+        const realNow = new Date();
+        const tz = getTargetTimeZoneStr();
+        const zonedNow = getZonedDate(realNow, tz);
+        
+        const currentTargetHours = zonedNow.getHours() + zonedNow.getMinutes() / 60 + zonedNow.getSeconds() / 3600;
         const pastLogs = [];
 
         bossData.forEach(item => {
@@ -506,15 +525,15 @@
             });
 
             adjustedIntervals.forEach(timeVal => {
-                let diffFromSpawn = currentSelectedTotalHours - timeVal;
-                // 자정 경계 오차 보정
-                if (currentSelectedTotalHours < 2 && timeVal > 22) {
-                    diffFromSpawn = (currentSelectedTotalHours + 24) - timeVal;
-                } else if (currentSelectedTotalHours > 22 && timeVal < 2) {
-                    diffFromSpawn = currentSelectedTotalHours - (timeVal + 24);
+                let diffFromSpawn = currentTargetHours - timeVal;
+                
+                // 자정 경계 오차 보정 규칙
+                if (currentTargetHours < 2 && timeVal > 22) {
+                    diffFromSpawn = (currentTargetHours + 24) - timeVal;
+                } else if (currentTargetHours > 22 && timeVal < 2) {
+                    diffFromSpawn = currentTargetHours - (timeVal + 24);
                 }
 
-                // 최근 1시간(60분) 이내에 나타났던 보스 기록 수집 (진행중인 5분도 과거 기록에 포함)
                 if (diffFromSpawn >= 0 && diffFromSpawn <= 1.0) {
                     const minutesAgo = Math.floor(diffFromSpawn * 60);
                     pastLogs.push({
@@ -528,7 +547,6 @@
             });
         });
 
-        // 가장 최근에 나타난 순서대로 역순 정렬 (0분 전인 것이 최상단으로)
         pastLogs.sort((a, b) => a.minutesAgo - b.minutesAgo);
 
         if (pastLogs.length === 0) {
@@ -550,82 +568,107 @@
         });
     }
 
+    // 🛠️ 핵심 대시보드 로직 (Intl 기반 완전 수정 버전)
     function updateDashboard() {
-        const now = new Date();
-        const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
-        
-        let targetClockTotalHours = utcHours + (currentZone === 'ASIA' ? 8 : 9);
-        if (targetClockTotalHours >= 24) targetClockTotalHours -= 24;
-        
+        const realNow = new Date();
         const t = i18n[currentLang];
-        document.getElementById('live-clock').innerText = `${t.clock} (${currentZone}): ${formatTimeLabel(targetClockTotalHours)}:${String(now.getUTCSeconds()).padStart(2, '0')}`;
+        
+        // 1. 선택한 타임존에 맞는 정밀 시간 객체 셋업
+        const tz = getTargetTimeZoneStr();
+        const zonedNow = getZonedDate(realNow, tz);
+        
+        // 시계 문자열 출력
+        document.getElementById('live-clock').innerText = `${t.clock} (${currentZone}): ${String(zonedNow.getHours()).padStart(2, '0')}:${String(zonedNow.getMinutes()).padStart(2, '0')}:${String(zonedNow.getSeconds()).padStart(2, '0')}`;
 
-        const currentSelectedTotalHours = utcHours + (currentZone === 'ASIA' ? 8 : 9);
         const timeline = [];
 
         bossData.forEach(item => {
+            // 타임존에 따라 매칭할 로컬 스케줄 계산
             const adjustedIntervals = item.intervals.map(time => {
                 let adjusted = currentZone === 'KOR' ? time + 1 : time;
                 return adjusted >= 24 ? adjusted - 24 : adjusted;
             });
-
             adjustedIntervals.sort((a, b) => a - b);
 
-            let nextSpawnVal = null;
-            let isNextDay = false;
+            let targetSpawnHour = null;
+            let targetSpawnDate = new Date(zonedNow); // 계산용 기본 베이스 데이트 복사
             let isCurrentlyActive = false;
-            let activeSpawnVal = null;
 
+            // 2. 현재 시간 진행중(+5분 판정) 체크
             for (let timeVal of adjustedIntervals) {
-                let diffFromSpawn = currentSelectedTotalHours - timeVal;
-                if (currentSelectedTotalHours < 1 && timeVal > 23) {
-                    diffFromSpawn = (currentSelectedTotalHours + 24) - timeVal;
+                let checkDate = new Date(zonedNow);
+                const h = Math.floor(timeVal);
+                const m = Math.round((timeVal % 1) * 60);
+                checkDate.setHours(h, m, 0, 0);
+
+                // 만약 새벽 타임이고 스케줄은 밤 23시 등인 경우 하루 전으로 계산 보정
+                if (zonedNow.getHours() < 2 && h >= 22) {
+                    checkDate.setDate(checkDate.getDate() - 1);
                 }
-                
-                if (diffFromSpawn >= 0 && diffFromSpawn <= (5 / 60)) {
+                // 만약 밤 타임이고 스케줄은 새벽 0시 등인 경우 다음날로 계산 보정
+                if (zonedNow.getHours() > 22 && h <= 1) {
+                    checkDate.setDate(checkDate.getDate() + 1);
+                }
+
+                const diffMs = zonedNow - checkDate;
+                if (diffMs >= 0 && diffMs <= (5 * 60 * 1000)) {
                     isCurrentlyActive = true;
-                    activeSpawnVal = timeVal;
-                    nextSpawnVal = timeVal;
+                    targetSpawnHour = timeVal;
+                    targetSpawnDate = checkDate;
                     break;
                 }
             }
 
+            // 3. 진행 중이 아닐 경우 가장 가까운 다음 등장 시간 체크
             if (!isCurrentlyActive) {
+                let found = false;
                 for (let timeVal of adjustedIntervals) {
-                    if (timeVal > currentSelectedTotalHours) {
-                        nextSpawnVal = timeVal;
+                    let checkDate = new Date(zonedNow);
+                    const h = Math.floor(timeVal);
+                    const m = Math.round((timeVal % 1) * 60);
+                    checkDate.setHours(h, m, 0, 0);
+
+                    if (checkDate > zonedNow) {
+                        targetSpawnHour = timeVal;
+                        targetSpawnDate = checkDate;
+                        found = true;
                         break;
                     }
                 }
 
-                if (nextSpawnVal === null) {
-                    nextSpawnVal = adjustedIntervals[0];
-                    isNextDay = true;
+                // 오늘 남은 타임이 아예 없으면 내일의 첫 타임으로 배치
+                if (!found) {
+                    targetSpawnHour = adjustedIntervals[0];
+                    const h = Math.floor(targetSpawnHour);
+                    const m = Math.round((targetSpawnHour % 1) * 60);
+                    targetSpawnDate.setDate(targetSpawnDate.getDate() + 1);
+                    targetSpawnDate.setHours(h, m, 0, 0);
                 }
             }
 
-            let diffMs = 0;
+            // 4. 최종 정렬 및 렌더링에 사용할 정밀 밀리초(Ms) 차이 도출
+            let finalDiffMs = 0;
             if (isCurrentlyActive) {
-                diffMs = -1000000000 + ((currentSelectedTotalHours - activeSpawnVal) * 60 * 60 * 1000);
+                // 상단 고정을 위한 임의 음수 가중치 스택 부여
+                finalDiffMs = -1000000000 + (zonedNow - targetSpawnDate);
             } else {
-                let diffHours = nextSpawnVal - currentSelectedTotalHours;
-                if (isNextDay) diffHours += 24;
-                if (diffHours < 0) diffHours += 24;
-                diffMs = diffHours * 60 * 60 * 1000;
+                finalDiffMs = targetSpawnDate - zonedNow;
             }
 
             timeline.push({
                 type: item.type,
                 map: currentLang === 'KO' ? item.mapKo : item.mapEn,
                 boss: currentLang === 'KO' ? item.bossKo : item.bossEn,
-                spawnTimeLabel: formatTimeLabel(nextSpawnVal),
-                diff: diffMs,
+                spawnTimeLabel: formatTimeLabel(targetSpawnHour),
+                diff: finalDiffMs,
                 isActive: isCurrentlyActive
             });
         });
 
+        // 오름차순 정렬
         timeline.sort((a, b) => a.diff - b.diff);
 
+        // DOM 업데이트
         const boardContainer = document.getElementById('boss-board');
         boardContainer.innerHTML = '';
 
@@ -661,7 +704,6 @@
             boardContainer.appendChild(row);
         });
 
-        // 실시간으로 지난 보스 기록 창이 열려있다면 내부 테이블 스케줄 데이터도 매 초 같이 리프레시 갱신
         if (document.getElementById('past-modal').style.display === 'flex') {
             renderPastTimetable();
         }
