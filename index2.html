@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>실시간 서버 이벤트 전광판 (CV Edition)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background-color: #0b0b10;
+        }
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        /* Glassmorphism effects */
+        .glass-card {
+            background: rgba(22, 22, 34, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .glass-header {
+            background: rgba(30, 30, 48, 0.85);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        /* Custom neon glowing animations */
+        .glow-cyan {
+            text-shadow: 0 0 10px rgba(0, 188, 212, 0.6);
+        }
+        .glow-amber {
+            text-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+        }
+        .glow-creator {
+            animation: pulse-glow 3s infinite alternate;
+        }
+        @keyframes pulse-glow {
+            from {
+                color: #00bcd4;
+                text-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
+            }
+            to {
+                color: #ff9800;
+                text-shadow: 0 0 16px rgba(255, 152, 0, 0.8);
+            }
+        }
+        /* Smooth blinking animation for imminent schedule */
+        .blink-imminent {
+            animation: blink 1s infinite alternate;
+        }
+        @keyframes blink {
+            from { opacity: 1; }
+            to { opacity: 0.4; }
+        }
+        /* Scrollbar customization */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f0f15;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #252538;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #ff9800;
+        }
+    </style>
+</head>
+<body class="text-gray-100 flex flex-col items-center justify-between min-h-screen pb-6">
+
+    <div class="container w-full max-w-4xl px-4 mt-6">
+        
+        <!-- Header Dashboard Panel -->
+        <header class="header glass-card rounded-2xl p-6 mb-6 shadow-2xl relative overflow-hidden">
+            <div class="absolute -right-16 -top-16 w-40 h-44 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -left-16 -bottom-16 w-40 h-44 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+            
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 relative z-10">
+                <div class="text-center md:text-left">
+                    <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-orange-500 to-cyan-400" id="main-title">
+                        ⏱️ 실시간 서버 이벤트 전광판(제작중)
+                    </h1>
+                    <p class="text-xs text-gray-400 mt-1 font-medium tracking-wide">MULTIVERSE SERVER LIVE TIMELINE</p>
+                </div>
+                
+                <div class="flex flex-col items-center md:items-end gap-2">
+                    <div class="text-sm text-cyan-400 font-bold mono tracking-widest bg-cyan-950/40 px-3 py-1.5 rounded-lg border border-cyan-800/30 flex items-center gap-2">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+                        <span id="clock-label">현재 시간</span>: <span id="live-clock">--:--:--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center md:justify-start gap-3 mt-6 pt-5 border-t border-gray-800/60 relative z-10">
+                <!-- Timezone Selector Switch -->
+                <div class="inline-flex bg-gray-950/80 p-1 rounded-xl border border-gray-800">
+                    <button class="ctrl-btn text-xs font-bold px-4 py-2 rounded-lg text-gray-400 transition-all duration-200" id="btn-asia" onclick="setTimezone('ASIA')">
+                        ASIA (UTC+8)
+                    </button>
+                    <button class="ctrl-btn text-xs font-bold px-4 py-2 rounded-lg text-gray-400 transition-all duration-200" id="btn-kor" onclick="setTimezone('KOR')">
+                        KOR (UTC+9)
+                    </button>
+                </div>
+
+                <!-- Language Selector Switch -->
+                <div class="inline-flex bg-gray-950/80 p-1 rounded-xl border border-gray-800">
+                    <button class="ctrl-btn text-xs font-bold px-4 py-2 rounded-lg text-gray-400 transition-all duration-200" id="btn-lang-ko" onclick="setLanguage('KO')">
+                        한글 (KOR)
+                    </button>
+                    <button class="ctrl-btn text-xs font-bold px-4 py-2 rounded-lg text-gray-400 transition-all duration-200" id="btn-lang-en" onclick="setLanguage('EN')">
+                        ENG
+                    </button>
+                </div>
+
+                <!-- Navigation Action Buttons -->
+                <div class="flex flex-wrap gap-2 w-full md:w-auto md:ml-auto">
+                    <a href="/index.html" target="_top" rel="noopener noreferrer" class="modal-open-btn text-xs font-bold px-4 py-2.5 rounded-xl border border-cyan-800/30 bg-cyan-950/30 text-cyan-300 hover:bg-cyan-900/40 hover:border-cyan-600/50 transition-all duration-200 flex items-center justify-center gap-1.5" id="btn-game-home">
+                        🎮 주간 미션
+                    </a>
+                    <button class="modal-open-btn text-xs font-bold px-4 py-2.5 rounded-xl border border-purple-800/30 bg-purple-950/30 text-purple-300 hover:bg-purple-900/40 hover:border-purple-600/50 transition-all duration-200" id="btn-view-past" onclick="openPastModal()">
+                        📜 지난 일정 기록
+                    </button>
+                    <button class="modal-open-btn text-xs font-bold px-4 py-2.5 rounded-xl border border-gray-800 bg-gray-900/60 text-gray-200 hover:bg-gray-800 hover:border-amber-500/50 transition-all duration-200" id="btn-view-table" onclick="openModal()">
+                        📅 전체 시간표 보기
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Live Status Panel -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" id="status-panel">
+            <!-- Currently Active Event Card -->
+            <div class="glass-card rounded-2xl p-5 border-l-4 border-cyan-500 relative overflow-hidden shadow-xl">
+                <div class="text-xs text-cyan-400 font-bold uppercase tracking-wider mb-3" id="status-active-title">현재 활성화된 이벤트</div>
+                <div id="active-event-container" class="flex flex-col justify-center min-h-[50px]">
+                    <!-- Rendered dynamically by javascript -->
+                </div>
+            </div>
+            <!-- Next Scheduled Event Card -->
+            <div class="glass-card rounded-2xl p-5 border-l-4 border-emerald-500 relative overflow-hidden shadow-xl">
+                <div class="text-xs text-emerald-400 font-bold uppercase tracking-wider mb-3" id="status-next-title">다음 예정된 이벤트</div>
+                <div id="next-event-container" class="flex flex-col justify-center min-h-[50px]">
+                    <!-- Rendered dynamically by javascript -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Live Schedule Board Panel -->
+        <main class="w-full">
+            <div class="board-header grid grid-cols-12 gap-2 px-6 py-3.5 bg-gray-950/90 rounded-t-2xl font-bold text-sm text-gray-400 border border-gray-800/80 border-b-0">
+                <div class="col-span-2 text-left" id="th-time">시간</div>
+                <div class="col-span-3 text-left" id="th-event">이벤트</div>
+                <div class="col-span-3 text-left" id="th-map">맵 분류 (MAP)</div>
+                <div class="col-span-4 text-right" id="th-countdown">남은 시간</div>
+            </div>
+            
+            <div class="boss-list glass-card rounded-b-2xl shadow-2xl border border-gray-800/80 overflow-hidden divide-y divide-gray-800/50" id="boss-board">
+                <!-- Dynamically updated scheduling items will render here -->
+            </div>
+            
+            <!-- Expandable Controller -->
+            <div class="flex justify-center mt-4">
+                <button class="bg-gray-900/80 hover:bg-gray-800 text-gray-300 hover:text-amber-400 px-8 py-2.5 rounded-full border border-gray-800 text-xs font-bold transition-all duration-200 shadow-lg tracking-wider" id="btn-expand-toggle" onclick="toggleExpandSchedules()">
+                    더보기 ∨
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Full 24-Hour Schedule Modal Dialog -->
+    <div class="modal fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 transition-all duration-300" id="timetable-modal" style="display: none;" onclick="closeModalViaBg(event, 'timetable-modal')">
+        <div class="modal-content glass-card rounded-2xl w-full max-w-4xl max-h-[85vh] flex flex-col shadow-2xl border border-gray-700/30 overflow-hidden">
+            <div class="modal-header px-6 py-4 border-b border-gray-800 flex justify-between items-center bg-gray-950/50">
+                <h2 class="text-lg font-bold text-amber-400" id="modal-title">📅 24시간 정밀 타임테이블</h2>
+                <button class="text-gray-400 hover:text-white text-3xl font-normal leading-none" onclick="closeModal('timetable-modal')">&times;</button>
+            </div>
+            <div class="modal-body p-6 overflow-y-auto bg-gray-950/20">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-gray-400 text-sm font-semibold">
+                            <th class="py-3 px-2" id="mth-time" style="width: 15%">시간</th>
+                            <th class="py-3 px-2" id="mth-event" style="width: 35%">이벤트</th>
+                            <th class="py-3 px-2" id="mth-map" style="width: 25%">맵</th>
+                            <th class="py-3 px-2" id="mth-desc" style="width: 25%">상세 구역 (Chamber)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/40 text-sm text-gray-300" id="modal-table-body">
+                        <!-- Auto-filled by javascript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Past 4-Hour Event Logs Modal Dialog -->
+    <div class="modal fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 transition-all duration-300" id="past-modal" style="display: none;" onclick="closeModalViaBg(event, 'past-modal')">
+        <div class="modal-content glass-card rounded-2xl w-full max-w-3xl max-h-[80vh] flex flex-col shadow-2xl border border-gray-700/30 overflow-hidden">
+            <div class="modal-header px-6 py-4 border-b border-gray-800 flex justify-between items-center bg-gray-950/50">
+                <h2 class="text-lg font-bold text-purple-400" id="past-modal-title">📜 최근 완료된 일정 내역 (최근 4시간 내)</h2>
+                <button class="text-gray-400 hover:text-white text-3xl font-normal leading-none" onclick="closeModal('past-modal')">&times;</button>
+            </div>
+            <div class="modal-body p-6 overflow-y-auto bg-gray-950/20">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-800 text-gray-400 text-sm font-semibold">
+                            <th class="py-3 px-2" id="pth-time" style="width: 18%">시간</th>
+                            <th class="py-3 px-2" id="pth-event" style="width: 42%">이벤트</th>
+                            <th class="py-3 px-2" id="pth-map" style="width: 20%">맵</th>
+                            <th class="py-3 px-4 text-right" id="pth-gap" style="width: 20%">완료 시간</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-800/40 text-sm text-gray-300" id="past-table-body">
+                        <!-- Auto-filled by javascript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Beautiful Glowing Footer -->
+    <footer class="footer mt-12 w-full max-w-4xl text-center py-6 border-t border-gray-800/40 text-xs text-gray-500 tracking-widest relative">
+        <span id="footer-prefix">제작 및 디자인 :</span> 
+        <span class="creator-accent glow-creator font-extrabold text-sm ml-1 select-none">CV</span> 
+        <span class="ml-2 font-mono">© 2026 All Rights Reserved.</span>
+    </footer>
+
+    <script>
+        // Global variables for dashboard state
+        let currentZone = 'ASIA';
+        let currentLang = 'KO';
+        let showAllSchedules = false; // "더보기" toggle state
+
+        // Multilingual dictionary configuration
+        const i18n = {
+            KO: {
+                title: "⏱️ 실시간 서버 이벤트 전광판(제작중)",
+                clockLabel: "현재 시간",
+                btnGameHome: "🎮 주간 미션",
+                btnPastLog: "📜 지난 일정 기록",
+                btnFullTable: "📅 전체 시간표 보기",
+                colTime: "시간",
+                colEvent: "이벤트",
+                colMap: "맵 분류 (MAP)",
+                colDesc: "상세 구역",
+                mthTime: "시간", mthEvent: "이벤트", mthMap: "맵", mthDesc: "상세 구역 (Chamber)",
+                modalTitle: "📅 24시간 정밀 타임테이블",
+                pastModalTitle: "📜 최근 완료된 일정 내역 (최근 4시간 내)",
+                activeTitle: "현재 활성화된 이벤트",
+                nextTitle: "다음 예정된 이벤트",
+                noEvent: "진행 중인 이벤트 없음",
+                noNextEvent: "예정된 이벤트 없음",
+                inProgress: "⚔️ 진행중 (+60분)",
+                hourUnit: "시간", minUnit: "분", secUnit: "초", agoUnit: "분 전 발생",
+                noPastEvents: "최근 4시간 내 완료된 일정이 없습니다.",
+                footer: "제작 및 디자인 :",
+                btnShowMore: "더보기 ∨",
+                btnShowLess: "접기 ∧"
+            },
+            EN: {
+                title: "⏱️ Server Event Live Dashboard(In production)",
+                clockLabel: "Current Time",
+                btnGameHome: "🎮 Weekly Mission",
+                btnPastLog: "📜 Past Event Log",
+                btnFullTable: "📅 View Full Timetable",
+                colTime: "Time",
+                colEvent: "Event",
+                colMap: "MAP Class",
+                colDesc: "Detail Info",
+                mthTime: "Time", mthEvent: "Event", mthMap: "Map", mthDesc: "Details (Chamber)",
+                modalTitle: "📅 24-Hour Master Timetable",
+                pastModalTitle: "📜 Recently Completed Event Log (Within Last 4 Hours)",
+                activeTitle: "Currently Active Event",
+                nextTitle: "Next Scheduled Event",
+                noEvent: "No Active Events",
+                noNextEvent: "No Upcoming Events",
+                inProgress: "⚔️ IN PROGRESS (+60m)",
+                hourUnit: "h", minUnit: "m", secUnit: "s", agoUnit: "m ago",
+                noPastEvents: "No completed schedules within the last 4 hours.",
+                footer: "Designed & Developed by",
+                btnShowMore: "Show More ∨",
+                btnShowLess: "Show Less ∧"
+            }
+        };
+
+        // Complete 24-Hour Schedule Dataset mapped from image_bbb49f.png (Baseline Server Time: UTC+8)
+                const rawSchedules = [
+            { hour: 0, eventKo: "ABM 보스", eventEn: "ABM BOSS", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-blue" },
+            { hour: 1, eventKo: "경험치 종료 & 3차 도미니언 종료", eventEn: "EXP TIME FINISH / 3 ENTRY DOMI FINISH", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
+            { hour: 2, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-gray" },
+            { hour: 3, eventKo: "", eventEn: "", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-blue" },
+            { hour: 4, eventKo: "SP보스", eventEn: "", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "", descEn: "", badge: "badge-amber" },
+            { hour: 5, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
+            { hour: 6, eventKo: "", eventEn: "", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-blue" },
+            { hour: 7, eventKo: "", eventEn: "", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
+            { hour: 8, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-gray" },
+            { hour: 9, eventKo: "1차 도미니언 시작", eventEn: "1 ENTRY DOMI START", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-green" },
+            { hour: 10, eventKo: "보스 연구소", eventEn: "BOSS LAB", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "", descEn: "", badge: "badge-amber" },
+            { hour: 11, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
+            { hour: 12, eventKo: "계곡 보스", eventEn: "VALEY BOSS", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-green" },
+            { hour: 13, eventKo: "1차 도미니언 종료", eventEn: "1 ENTRY DOMI FINISH", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
+            { hour: 14, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-gray" },
+            { hour: 15, eventKo: "2차 도미니언 시작", eventEn: "2 ENTRY DOMI START", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-green" },
+            { hour: 16, eventKo: "", eventEn: "", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "", descEn: "", badge: "badge-amber" },
+            { hour: 17, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
+            { hour: 18, eventKo: "", eventEn: "", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-blue" },
+            { hour: 19, eventKo: "2차 도미니언 종료", eventEn: "2 ENTRY DOMI FINISH", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
+            { hour: 20, eventKo: "보스 연구소", eventEn: "BOSS LAB", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-amber" },
+            { hour: 21, eventKo: "경험치 시작 & 3차 도미니언 시작", eventEn: "EXP TIME START / 3 ENTRY DOMI START", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-green" },
+            { hour: 22, eventKo: "계곡 보스", eventEn: "VALEY BOSS", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "W1/W7/W2/W3/L1W1", descEn: "W1/W7/W2/W3/L1W1", badge: "badge-amber" },
+            { hour: 23, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" }
+        ];
+
+        // Timezone and language initialization
+        function setTimezone(zone) {
+            currentZone = zone;
+            document.getElementById('btn-asia').className = "ctrl-btn text-xs font-bold px-4 py-2 rounded-lg transition-all duration-200 " + (zone === 'ASIA' ? "bg-amber-500 text-gray-900 shadow-md" : "text-gray-400 hover:text-white");
+            document.getElementById('btn-kor').className = "ctrl-btn text-xs font-bold px-4 py-2 rounded-lg transition-all duration-200 " + (zone === 'KOR' ? "bg-amber-500 text-gray-900 shadow-md" : "text-gray-400 hover:text-white");
+            updateDashboard();
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const isKO = lang === 'KO';
+            document.getElementById('btn-lang-ko').className = "ctrl-btn text-xs font-bold px-4 py-2 rounded-lg transition-all duration-200 " + (isKO ? "bg-cyan-500 text-gray-900 shadow-md" : "text-gray-400 hover:text-white");
+            document.getElementById('btn-lang-en').className = "ctrl-btn text-xs font-bold px-4 py-2 rounded-lg transition-all duration-200 " + (!isKO ? "bg-cyan-500 text-gray-900 shadow-md" : "text-gray-400 hover:text-white");
+            
+            // Translate UI elements
+            const dict = i18n[lang];
+            document.getElementById('main-title').innerText = dict.title;
+            document.getElementById('clock-label').innerText = dict.clockLabel;
+            document.getElementById('btn-game-home').innerHTML = dict.btnGameHome;
+            document.getElementById('btn-view-past').innerText = dict.btnPastLog;
+            document.getElementById('btn-view-table').innerText = dict.btnFullTable;
+            
+            document.getElementById('th-time').innerText = dict.colTime;
+            document.getElementById('th-event').innerText = dict.colEvent;
+            document.getElementById('th-map').innerText = dict.colMap;
+            document.getElementById('th-countdown').innerText = dict.thCountdown;
+
+            document.getElementById('mth-time').innerText = dict.mthTime;
+            document.getElementById('mth-event').innerText = dict.mthEvent;
+            document.getElementById('mth-map').innerText = dict.mthMap;
+            document.getElementById('mth-desc').innerText = dict.mthDesc;
+
+            document.getElementById('pth-time').innerText = dict.mthTime;
+            document.getElementById('pth-event').innerText = dict.mthEvent;
+            document.getElementById('pth-map').innerText = dict.mthMap;
+            
+            document.getElementById('status-active-title').innerText = dict.activeTitle;
+            document.getElementById('status-next-title').innerText = dict.nextTitle;
+            document.getElementById('footer-prefix').innerText = dict.footer;
+
+            updateExpandButtonText();
+            updateDashboard();
+        }
+
+        // Toggle "더보기/접기" schedules display
+        function toggleExpandSchedules() {
+            showAllSchedules = !showAllSchedules;
+            updateExpandButtonText();
+            updateDashboard();
+        }
+
+        function updateExpandButtonText() {
+            const btn = document.getElementById('btn-expand-toggle');
+            const dict = i18n[currentLang];
+            btn.innerText = showAllSchedules ? dict.btnShowLess : dict.btnShowMore;
+        }
+
+        // Formats float value time to String time expression
+        function formatHour(hourDecimal) {
+            let h = Math.floor(hourDecimal);
+            let m = Math.round((hourDecimal % 1) * 60);
+            if (h >= 24) h -= 24;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+
+        // Badge styling helpers
+        function getBadgeStyles(badgeKey) {
+            switch(badgeKey) {
+                case "badge-green": return "bg-green-950/60 text-green-400 border border-green-800/40";
+                case "badge-blue": return "bg-blue-950/60 text-blue-400 border border-blue-800/40";
+                case "badge-amber": return "bg-amber-950/60 text-amber-400 border border-amber-800/40";
+                case "badge-red": return "bg-red-950/60 text-red-400 border border-red-800/40";
+                default: return "bg-slate-900/60 text-slate-400 border border-slate-700/40";
+            }
+        }
+
+        // Calculates timezone normalized hours [0, 24) from current UTC time
+        function getZoneCalculatedTime() {
+            const now = new Date();
+            const utcHours = now.getUTCHours() + now.getUTCMinutes() / 60 + now.getUTCSeconds() / 3600;
+            const offset = currentZone === 'ASIA' ? 8 : 9;
+            let currentSelectedHours = utcHours + offset;
+            if (currentSelectedHours >= 24) currentSelectedHours -= 24;
+            return currentSelectedHours;
+        }
+
+        // Main updates for schedule calculation, sorting, and UI population
+        function updateDashboard() {
+            const dict = i18n[currentLang];
+            const now = new Date();
+            
+            // Normalize selected timezone time
+            const currentSelectedHours = getZoneCalculatedTime();
+            document.getElementById('live-clock').innerText = `${formatHour(currentSelectedHours)}:${String(now.getUTCSeconds()).padStart(2, '0')}`;
+
+            const timeline = [];
+
+            // Compile adjusted time for KOR / ASIA relative to original UTC+8 values
+            rawSchedules.forEach(item => {
+                let adjustedHour = item.hour;
+                if (currentZone === 'KOR') {
+                    adjustedHour = (item.hour + 1) % 24;
+                }
+
+                let isCurrentlyActive = false;
+                let activeSpawnVal = adjustedHour;
+
+                // Duration is set to 1 hour (60/60 hours)
+                let diffFromSpawn = currentSelectedHours - adjustedHour;
+                if (currentSelectedHours < 2 && adjustedHour > 22) {
+                    diffFromSpawn = (currentSelectedHours + 24) - adjustedHour;
+                } else if (currentSelectedHours > 22 && adjustedHour < 2) {
+                    diffFromSpawn = currentSelectedHours - (adjustedHour + 24);
+                }
+
+                // If active (within 1 hour)
+                if (diffFromSpawn >= 0 && diffFromSpawn <= 1.0) {
+                    isCurrentlyActive = true;
+                }
+
+                let diffMs = 0;
+                if (isCurrentlyActive) {
+                    // Send to top using a strong negative bias offset
+                    diffMs = -1000000000 + (diffFromSpawn * 60 * 60 * 1000);
+                } else {
+                    let diffHours = adjustedHour - currentSelectedHours;
+                    if (diffHours < 0) diffHours += 24;
+                    diffMs = diffHours * 60 * 60 * 1000;
+                }
+
+                timeline.push({
+                    original: item,
+                    adjustedHour: adjustedHour,
+                    diff: diffMs,
+                    isActive: isCurrentlyActive
+                });
+            });
+
+            // Sort timeline by imminent next schedule order (Active first, then ascending time wait)
+            timeline.sort((a, b) => a.diff - b.diff);
+
+            // Populate currently active and next scheduled summaries
+            renderSummaryWidgets(timeline, dict);
+
+            // Populate dashboard container
+            const boardContainer = document.getElementById('boss-board');
+            boardContainer.innerHTML = '';
+
+            // Handle expandable pagination (default 5 items)
+            const visibleTimeline = showAllSchedules ? timeline : timeline.slice(0, 5);
+
+            visibleTimeline.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "boss-row grid grid-cols-12 gap-2 px-6 py-4 items-center transition-all duration-200 hover:bg-gray-800/20";
+
+                let countdownText = '';
+                const eventText = currentLang === 'KO' ? item.original.eventKo : item.original.eventEn;
+                const mapText = currentLang === 'KO' ? item.original.mapKo : item.original.mapEn;
+                const descText = currentLang === 'KO' ? item.original.descKo : item.original.descEn;
+
+                // Combine MAP Class and Chamber details cleanly
+                let mapSectionHtml = `<span class="font-semibold text-gray-200 text-xs py-1 px-2 rounded ${getBadgeStyles(item.original.badge)}">${mapText || "ROOM"}</span>`;
+                if (descText) {
+                    mapSectionHtml += `<span class="block text-xs text-gray-400 font-medium mt-1">${descText}</span>`;
+                }
+
+                if (item.isActive) {
+                    row.className += " progress-row";
+                    countdownText = `<span class="glow-cyan text-cyan-400 font-bold tracking-wide select-none">${dict.inProgress}</span>`;
+                } else {
+                    const hoursLeft = Math.floor(item.diff / (1000 * 60 * 60));
+                    const minutesLeft = Math.floor((item.diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const secondsLeft = Math.floor((item.diff % (1000 * 60)) / 1000);
+
+                    // Under 10 minutes imminent alarm blink
+                    if (item.diff < 10 * 60 * 1000) {
+                        row.className += " imminent-row bg-red-950/5";
+                        countdownText = `<span class="glow-amber text-orange-400 font-bold blink-imminent">${hoursLeft}${dict.hourUnit} ${minutesLeft}${dict.minUnit} ${secondsLeft}${dict.secUnit}</span>`;
+                    } else {
+                        countdownText = `<span class="text-green-400 font-bold mono">${hoursLeft}${dict.hourUnit} ${minutesLeft}${dict.minUnit} ${secondsLeft}${dict.secUnit}</span>`;
+                    }
+                }
+
+                row.innerHTML = `
+                    <div class="col-span-2 text-left font-bold text-gray-300 mono text-sm">${formatHour(item.adjustedHour)}</div>
+                    <div class="col-span-3 text-left font-bold text-white text-sm">${eventText || "CHAMBER ROTATION"}</div>
+                    <div class="col-span-3 text-left text-sm">${mapSectionHtml}</div>
+                    <div class="col-span-4 text-right text-sm">${countdownText}</div>
+                `;
+                boardContainer.appendChild(row);
+            });
+
+            // If the Past logs modal is active, update its table context in sync
+            if (document.getElementById('past-modal').style.display === 'flex') {
+                renderPastTimetable();
+            }
+        }
+
+        // Renders active and next event details dynamically into top cards
+        function renderSummaryWidgets(timeline, dict) {
+            const activeContainer = document.getElementById('active-event-container');
+            const nextContainer = document.getElementById('next-event-container');
+
+            // Find currently running active events
+            const activeEvents = timeline.filter(item => item.isActive);
+            // Find closest upcoming event
+            const upcomingEvents = timeline.filter(item => !item.isActive);
+            const nextEvent = upcomingEvents[0];
+
+            // Render Currently Active Cards
+            if (activeEvents.length > 0) {
+                activeContainer.innerHTML = activeEvents.map(item => {
+                    const eventText = currentLang === 'KO' ? item.original.eventKo : item.original.eventEn;
+                    const mapText = currentLang === 'KO' ? item.original.mapKo : item.original.mapEn;
+                    const descText = currentLang === 'KO' ? item.original.descKo : item.original.descEn;
+                    return `
+                        <div class="flex justify-between items-center py-1">
+                            <div>
+                                <span class="font-extrabold text-white text-base block">${eventText || "CHAMBER ROTATION"}</span>
+                                <span class="text-xs text-gray-400 font-medium block mt-0.5">${mapText}${descText ? ' &bull; ' + descText : ''}</span>
+                            </div>
+                            <span class="text-xs font-bold text-cyan-400 bg-cyan-950/50 border border-cyan-500/30 px-2 py-1 rounded-lg">${formatHour(item.adjustedHour)} - ${dict.inProgress}</span>
+                        </div>
+                    `;
+                }).join('<div class="border-t border-gray-800/40 my-2 pt-2"></div>');
+            } else {
+                activeContainer.innerHTML = `
+                    <div class="text-gray-500 font-medium text-sm flex items-center gap-2 py-3">
+                        <span class="inline-block w-2.5 h-2.5 rounded-full bg-gray-700 animate-pulse"></span>
+                        ${dict.noEvent}
+                    </div>
+                `;
+            }
+
+            // Render Next Scheduled Card
+            if (nextEvent) {
+                const eventText = currentLang === 'KO' ? nextEvent.original.eventKo : nextEvent.original.eventEn;
+                const mapText = currentLang === 'KO' ? nextEvent.original.mapKo : nextEvent.original.mapEn;
+                const descText = currentLang === 'KO' ? nextEvent.original.descKo : nextEvent.original.descEn;
+
+                const hoursLeft = Math.floor(nextEvent.diff / (1000 * 60 * 60));
+                const minutesLeft = Math.floor((nextEvent.diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secondsLeft = Math.floor((nextEvent.diff % (1000 * 60)) / 1000);
+
+                let countdownColor = "text-emerald-400";
+                let blinkClass = "";
+                if (nextEvent.diff < 10 * 60 * 1000) {
+                    countdownColor = "text-orange-400 glow-amber";
+                    blinkClass = "blink-imminent";
+                }
+
+                nextContainer.innerHTML = `
+                    <div class="flex justify-between items-center py-1">
+                        <div>
+                            <span class="font-extrabold text-white text-base block">${eventText || "CHAMBER ROTATION"}</span>
+                            <span class="text-xs text-gray-400 font-medium block mt-0.5">${mapText}${descText ? ' &bull; ' + descText : ''}</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[11px] text-gray-400 font-semibold block bg-gray-950/40 px-1.5 py-0.5 rounded border border-gray-800/50">${formatHour(nextEvent.adjustedHour)} 시작</span>
+                            <span class="text-sm font-bold ${countdownColor} ${blinkClass} mono block mt-1">${hoursLeft}${dict.hourUnit} ${minutesLeft}${dict.minUnit} ${secondsLeft}${dict.secUnit}</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                nextContainer.innerHTML = `<div class="text-gray-500 font-medium text-sm py-3">${dict.noNextEvent}</div>`;
+            }
+        }
+
+        // Modals control flow
+        function openModal() {
+            document.getElementById('timetable-modal').style.display = 'flex';
+            renderFullTimetable();
+        }
+
+        function openPastModal() {
+            document.getElementById('past-modal').style.display = 'flex';
+            renderPastTimetable();
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+
+        function closeModalViaBg(e, id) {
+            if(e.target.id === id) closeModal(id);
+        }
+
+        // Renders complete 24 hours timeline configuration
+        function renderFullTimetable() {
+            const dict = i18n[currentLang];
+            document.getElementById('modal-title').innerText = `${dict.modalTitle} (${currentZone})`;
+            const bodyContainer = document.getElementById('modal-table-body');
+            bodyContainer.innerHTML = '';
+
+            const localSchedules = rawSchedules.map(item => {
+                let adjustedHour = item.hour;
+                if (currentZone === 'KOR') {
+                    adjustedHour = (item.hour + 1) % 24;
+                }
+                return { original: item, adjustedHour: adjustedHour };
+            });
+
+            // Sort by standard timeline flow 00:00 -> 23:00
+            localSchedules.sort((a, b) => a.adjustedHour - b.adjustedHour);
+
+            localSchedules.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-gray-800/30 hover:bg-gray-800/10 transition-colors";
+
+                const eventText = currentLang === 'KO' ? item.original.eventKo : item.original.eventEn;
+                const mapText = currentLang === 'KO' ? item.original.mapKo : item.original.mapEn;
+                const descText = currentLang === 'KO' ? item.original.descKo : item.original.descEn;
+
+                const mapSection = mapText ? `<span class="px-2 py-0.5 rounded text-xs ${getBadgeStyles(item.original.badge)}">${mapText}</span>` : `<span class="text-gray-600">-</span>`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-2 font-bold mono text-cyan-400">${formatHour(item.adjustedHour)}</td>
+                    <td class="py-3 px-2 font-bold text-white text-xs md:text-sm">${eventText || "<span class='text-gray-500 font-normal'>-</span>"}</td>
+                    <td class="py-3 px-2">${mapSection}</td>
+                    <td class="py-3 px-2 text-xs md:text-sm font-medium text-gray-400">${descText || "-"}</td>
+                `;
+                bodyContainer.appendChild(tr);
+            });
+        }
+
+        // Computes and renders logs occurring in the last 4 hours (excluding active period)
+        function renderPastTimetable() {
+            const dict = i18n[currentLang];
+            document.getElementById('past-modal-title').innerText = `${dict.pastModalTitle} (${currentZone})`;
+            const bodyContainer = document.getElementById('past-table-body');
+            bodyContainer.innerHTML = '';
+
+            const currentSelectedHours = getZoneCalculatedTime();
+            const pastLogs = [];
+
+            rawSchedules.forEach(item => {
+                let adjustedHour = item.hour;
+                if (currentZone === 'KOR') {
+                    adjustedHour = (item.hour + 1) % 24;
+                }
+
+                let diffFromSpawn = currentSelectedHours - adjustedHour;
+                if (currentSelectedHours < 4 && adjustedHour > 20) {
+                    diffFromSpawn = (currentSelectedHours + 24) - adjustedHour;
+                } else if (currentSelectedHours > 20 && adjustedHour < 4) {
+                    diffFromSpawn = currentSelectedHours - (adjustedHour + 24);
+                }
+
+                // Show schedules completed within the last 4 hours (excluding 1 hour interval currently active in board)
+                if (diffFromSpawn >= 1.0 && diffFromSpawn <= 5.0) {
+                    const minutesAgo = Math.floor(diffFromSpawn * 60);
+                    pastLogs.push({
+                        original: item,
+                        adjustedHour: adjustedHour,
+                        minutesAgo: minutesAgo
+                    });
+                }
+            });
+
+            // Sort completed events by recency (the most recently completed first)
+            pastLogs.sort((a, b) => a.minutesAgo - b.minutesAgo);
+
+            if (pastLogs.length === 0) {
+                bodyContainer.innerHTML = `<tr><td colspan="4" class="py-12 text-center text-gray-500 font-semibold text-sm">${dict.noPastEvents}</td></tr>`;
+                return;
+            }
+
+            pastLogs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-gray-800/30 hover:bg-gray-800/10 transition-colors";
+
+                const eventText = currentLang === 'KO' ? log.original.eventKo : log.original.eventEn;
+                const mapText = currentLang === 'KO' ? log.original.mapKo : log.original.mapEn;
+                const descText = currentLang === 'KO' ? log.original.descKo : log.original.descEn;
+
+                let mapSection = mapText ? `<span class="px-2 py-0.5 rounded text-xs ${getBadgeStyles(log.original.badge)}">${mapText}</span>` : `<span class="text-gray-600">-</span>`;
+                if (descText) {
+                    mapSection += `<span class="block text-[11px] text-gray-400 mt-1">${descText}</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td class="py-4 px-2 font-bold text-gray-400 mono">${formatHour(log.adjustedHour)}</td>
+                    <td class="py-4 px-2 font-bold text-white text-xs md:text-sm">${eventText || "CHAMBER ROTATION"}</td>
+                    <td class="py-4 px-2">${mapSection}</td>
+                    <td class="py-4 px-4 text-right font-medium text-amber-500/80 text-xs md:text-sm mono">${log.minutesAgo} ${dict.agoUnit}</td>
+                `;
+                bodyContainer.appendChild(tr);
+            });
+        }
+
+        // Start live tracking loop and initialize defaults
+        setInterval(updateDashboard, 1000);
+        setTimezone('ASIA');
+        setLanguage('KO');
+    </script>
+</body>
+</html>
