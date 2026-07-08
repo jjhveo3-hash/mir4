@@ -286,29 +286,37 @@
         };
 
         // Complete 24-Hour Schedule Dataset mapped from image_bbb49f.png (Baseline Server Time: UTC+8)
-                const rawSchedules = [
-            { hour: 0, eventKo: "ABM 보스", eventEn: "ABM BOSS", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-blue" },
-            { hour: 1, eventKo: "경험치 종료 & 3차 도미니언 종료", eventEn: "EXP TIME FINISH / 3 ENTRY DOMI FINISH", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
-            { hour: 2, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-gray" },
-            { hour: 3, eventKo: "", eventEn: "", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-blue" },
-            { hour: 4, eventKo: "SP보스", eventEn: "", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "", descEn: "", badge: "badge-amber" },
+                 const rawSchedules = [
+            { hour: 0, eventKo: "WB / LC3", eventEn: "WB / LC3", mapKo: "WB / LC3", mapEn: "WB / LC3", descKo: "W8/W4/W5/W6/L1W2", descEn: "W8/W4/W5/W6/L1W2", badge: "badge-blue" },
+            { hour: 0.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
+            { hour: 1, eventKo: "SP", eventEn: "SP", mapKo: "SP/11F&12F", mapEn: "SP/11F&12F", descKo: "SP", descEn: "SP", badge: "badge-red" },
+            { hour: 2, eventKo: "광란", eventEn: "Frenzy", mapKo: "광란", mapEn: "Frenzy", descKo: "광란의 방", descEn: "Frenzy Chamber", badge: "badge-gray" },
+            { hour: 3, eventKo: "LC3/LW/ORB", eventEn: "LC3/LW/ORB", mapKo: "LC3/LW/ORB", mapEn: "LC3/LW/ORB", descKo: "MS11/L1W1", descEn: "MS11 Living Wraiths", badge: "badge-blue" },
+            { hour: 3.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
+            { hour: 4, eventKo: "SP", eventEn: "SP", mapKo: "SP", mapEn: "SP", descKo: "SP", descEn: "SP", badge: "badge-red" },
             { hour: 5, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 6, eventKo: "", eventEn: "", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-blue" },
+            { hour: 6.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 7, eventKo: "", eventEn: "", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
             { hour: 8, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-gray" },
             { hour: 9, eventKo: "1차 도미니언 시작", eventEn: "1 ENTRY DOMI START", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-green" },
+            { hour: 9.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 10, eventKo: "보스 연구소", eventEn: "BOSS LAB", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "", descEn: "", badge: "badge-amber" },
             { hour: 11, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 12, eventKo: "계곡 보스", eventEn: "VALEY BOSS", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-green" },
+            { hour: 12.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 13, eventKo: "1차 도미니언 종료", eventEn: "1 ENTRY DOMI FINISH", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
             { hour: 14, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-gray" },
             { hour: 15, eventKo: "2차 도미니언 시작", eventEn: "2 ENTRY DOMI START", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-green" },
+            { hour: 15.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 16, eventKo: "", eventEn: "", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "", descEn: "", badge: "badge-amber" },
             { hour: 17, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 18, eventKo: "", eventEn: "", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 허공의 방", descEn: "MS11 Void Chamber", badge: "badge-blue" },
+            { hour: 18.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 19, eventKo: "2차 도미니언 종료", eventEn: "2 ENTRY DOMI FINISH", mapKo: "SP 보스 퇴장", mapEn: "SP BOSS DOWN", descKo: "", descEn: "", badge: "badge-red" },
             { hour: 20, eventKo: "보스 연구소", eventEn: "BOSS LAB", mapKo: "", mapEn: "", descKo: "MS11 광란의 방", descEn: "MS11 Frenzy Chamber", badge: "badge-amber" },
             { hour: 21, eventKo: "경험치 시작 & 3차 도미니언 시작", eventEn: "EXP TIME START / 3 ENTRY DOMI START", mapKo: "MS 보스", mapEn: "MS BOSS", descKo: "MS11 원혼의 방", descEn: "MS11 Living Wraiths", badge: "badge-green" },
+            { hour: 21.5, eventKo: "분노", eventEn: "Fury", mapKo: "분노", mapEn: "Fury", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" },
             { hour: 22, eventKo: "계곡 보스", eventEn: "VALEY BOSS", mapKo: "SP 보스 출현", mapEn: "SP BOSS UP", descKo: "W1/W7/W2/W3/L1W1", descEn: "W1/W7/W2/W3/L1W1", badge: "badge-amber" },
             { hour: 23, eventKo: "", eventEn: "", mapKo: "", mapEn: "", descKo: "MS11 분노의 방", descEn: "MS11 Fury Chamber", badge: "badge-gray" }
         ];
