@@ -177,6 +177,7 @@
         .badge-w8 { background-color: #1a237e; color: #e8eaf6; border: 1px solid #ffd700; }
         .badge-l1w1 { background-color: #e65100; color: #fff3e0; border: 1px solid #ffb74d; }
         .badge-l1w2 { background-color: #37474f; color: #eceff1; border: 1px solid #90a4ae; }
+        .badge-l1w3 { background-color: #48e709; color: #eceff1; border: 1px solid #ea16fd; }
         
         .map-name { color: #cfd8dc; font-weight: 500; }
         .boss-name { color: #fff; font-weight: bold; }
@@ -281,7 +282,7 @@
                     <button class="ctrl-btn" id="btn-lang-en" onclick="setLanguage('EN')">English (ENG)</button>
                 </div>
                 
-                <a href="./com.html" target="_top" id="btn-home" class="modal-open-btn home-link-btn">🎮 콘텐츠 시간</a>
+                <a href="/index2.html" target="_top" id="btn-home" class="modal-open-btn home-link-btn">🎮 콘텐츠 시간</a>
 
                 <button class="modal-open-btn past-log-btn" id="btn-view-past" onclick="openPastModal()">📜 지난 보스 기록</button>
                 <button class="modal-open-btn" id="btn-view-table" onclick="openModal()">📅 전체 시간표 보기</button>
@@ -356,7 +357,7 @@
     const i18n = {
         KO: {
             title: "⏱️ 전대륙 보스 실시간 전광판", clock: "현재 시간", viewTable: "📅 전체 시간표 보기", viewPast: "📜 지난 보스 기록",
-            gameHome: "🎮 콘텐츠타임",
+            gameHome: "🎮 게임 홈페이지",
             thType: "구분", thMap: "지역", thBoss: "보스명", thTime: "등장 시간", thCountdown: "남은 시간",
             modalTitle: "📅 전대륙 보스 24시간 전체 시간표", mthSchedule: "하루 출현 스케줄 전체",
             pastModalTitle: "📜 최근 등장한 지난 보스 기록 (최근 1시간 내)",
@@ -402,7 +403,14 @@
         { type: "layer 1- W2", mapKo: "구룡빙원 (L1)", mapEn: "Dragon ICE Field (L1)", bossKo: "괴무강", bossEn: "Guemugwang", intervals: [5.5, 11.5, 17.5, 23.5] },
         { type: "layer 1- W2", mapKo: "지하 감옥 (L1)", mapEn: "UnderGround Jail (L1)", bossKo: "도맹룡", bossEn: "Do Maeongryong", intervals: [6.5, 12.5, 18.5, 0.5] },
         { type: "layer 1- W2", mapKo: "지하 감옥 (L1) ", mapEn: "UnderGround Jail (L1)", bossKo: "몰그라쉬", bossEn: "Molgrash", intervals: [1.5, 4.5, 7.5, 10.5, 13.5, 16.5, 19.5, 22.5] },
-        { type: "layer 1- W2", mapKo: "구룡궁 (L1)", mapEn: "Dragon Palace (L1)", bossKo: "위광령", bossEn: "Wi Gwangryeong", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] }
+        { type: "layer 1- W2", mapKo: "구룡궁 (L1)", mapEn: "Dragon Palace (L1)", bossKo: "위광령", bossEn: "Wi Gwangryeong", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
+        { type: "layer 1- W3", mapKo: "원시오마의 유적", mapEn: "Primal Nefariox Ruins (L1)", bossKo: "크로그", bossEn: "Krog", intervals: [1.5, 7.5, 13.5, 19.5] },
+        { type: "layer 1- W3", mapKo: "얼어붙은 협곡", mapEn: "Frozen Gorge (L1)", bossKo: "켈리스", bossEn: "Kelis", intervals: [2.5, 8.5, 14.5, 20.5] },
+        { type: "layer 1- W3", mapKo: "얼어붙은 협곡", mapEn: "Frozen Gorge (L1)", bossKo: "탈라사", bossEn: "Talasa", intervals: [2.5, 5.5, 8.5, 11.5, 14.5, 17.5, 20.5, 23.5] },
+        { type: "layer 1- W3", mapKo: "고대인의 옛성", mapEn: "Ancient One's Old Castle (L1)", bossKo: "바르카스", bossEn: "Barkas", intervals: [3.5, 9.5, 15.5, 21.5] },
+        { type: "layer 1- W3", mapKo: "해룡의 신전", mapEn: "Hydra's Temple (L1)", bossKo: "바르간", bossEn: "Bargan", intervals: [4.5, 10.5, 16.5, 22.5] },
+        { type: "layer 1- W3", mapKo: "해룡의 신전", mapEn: "Hydra's Temple (L1)", bossKo: "모르그", bossEn: "Morg", intervals: [3.5, 9.5, 15.5, 21.5] },
+        { type: "layer 1- W3", mapKo: "해룡의 심층부", mapEn: "Hydra's Depths (L1)", bossKo: "보르도", bossEn: "Bordo", intervals: [5.5, 11.5, 17.5, 23.5] }
     ];
 
     function getTargetTimeZoneStr() {
@@ -480,6 +488,7 @@
         if (cleanType === 'w8') return 'badge-w8';
         if (cleanType.includes('layer 1- w1')) return 'badge-l1w1';
         if (cleanType.includes('layer 1- w2')) return 'badge-l1w2';
+        if (cleanType.includes('layer 1- w3')) return 'badge-l1w3';
         return '';
     }
 
