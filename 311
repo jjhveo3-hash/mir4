@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>311 Alliance Comprehensive Protocol & Guide</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Pretendard', sans-serif; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased p-3 sm:p-6 lg:p-8">
+
+  <div class="max-w-7xl mx-auto space-y-6">
+
+    <!-- Header & Server Info -->
+    <header class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-xl">
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-5">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <span class="w-3 h-3 rounded-full bg-cyan-400 animate-pulse"></span>
+            <span class="text-xs font-bold uppercase tracking-widest text-cyan-400">Alliance Operational Protocol</span>
+          </div>
+          <h1 class="text-2xl md:text-3xl font-extrabold text-white tracking-tight mt-1">311 연맹 통합 운영 수칙 및 가이드</h1>
+        </div>
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="https://www.hofgamer.com/" target="_blank" class="px-4 py-2 text-xs font-bold rounded-lg bg-cyan-500/10 text-cyan-300 border border-cyan-500/30 hover:bg-cyan-500/20 transition">
+            전투력(PS) 기준 확인: HOFGamer ↗
+          </a>
+        </div>
+      </div>
+      
+      <!-- Server Allocation Bar -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-4 text-xs">
+        <div class="bg-slate-950/80 px-3.5 py-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+          <span class="text-slate-400 font-semibold">RV (Red Valley)</span>
+          <span class="text-slate-200 font-bold">征戰九州之藍白拖鞋</span>
+        </div>
+        <div class="bg-slate-950/80 px-3.5 py-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+          <span class="text-slate-400 font-semibold">SV (Snake Valley)</span>
+          <span class="text-slate-200 font-bold">春夏秋冬 • EXO</span>
+        </div>
+        <div class="bg-slate-950/80 px-3.5 py-2.5 rounded-lg border border-slate-800 flex items-center justify-between">
+          <span class="text-slate-400 font-semibold">BV (Bicheon Valley)</span>
+          <span class="text-cyan-300 font-bold">311 & 314 (매주 교대)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Emergency Protocol -->
+    <section class="rounded-2xl border-2 border-red-500/60 bg-red-950/30 p-5 md:p-6 relative overflow-hidden shadow-lg">
+      <div class="flex items-start gap-4">
+        <div class="text-3xl p-2 bg-red-500/20 rounded-xl border border-red-500/40">🚨</div>
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-extrabold px-2 py-0.5 bg-red-500 text-white rounded">EMERGENCY PROTOCOL</span>
+            <h2 class="text-base sm:text-lg font-bold text-red-200">311 거점 비상 상황 수칙</h2>
+          </div>
+          <p class="text-sm text-red-100/90 leading-relaxed pt-1">
+            적군이 311을 공격하여 <strong>"통제 불능(방어 불가)"</strong> 상태가 선언되면 관련 모든 상자는 즉시 <strong>FFA(자유 루팅)</strong>로 전환됩니다. 기존 WB 분배 목록과 관계없이 <strong>모든 연맹원은 즉시 상자를 획득</strong>할 수 있습니다. (적에게 상자를 빼앗기지 않는 것이 최우선입니다.)
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main 3-Column Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+      <!-- Column 1: MS/SP Zone Regulations & Rules -->
+      <div class="lg:col-span-2 space-y-6">
+
+        <!-- MS (Magic Square) Section -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h2 class="text-lg font-bold text-cyan-400 flex items-center gap-2">
+              <span>🔷</span> 마방진(MS) 파밍 규정
+            </h2>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded bg-slate-800 text-cyan-300 border border-slate-700">1자리 1인 제한 (수련실/백은실 제외)</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-bold text-white">MS10</span>
+                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 border border-cyan-800 rounded font-semibold">520K↑</span>
+              </div>
+              <p class="text-slate-300"><strong class="text-white">ADC:</strong> 520K 이상 전용.</p>
+              <p class="text-slate-400 leading-relaxed">
+                도착 시 즉시 문파 파티를 생성하여 잔여석 유무를 알리고 헛걸음을 방지해야 합니다. 기준 미달자는 자격자가 없을 때 임시 자사 가능하나, 자격자 도착 시 즉시 자리를 양보해야 합니다.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-bold text-white">MS11</span>
+                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 border border-cyan-800 rounded font-semibold">600K↑</span>
+              </div>
+              <p class="text-slate-300"><strong class="text-white">Fury / Frenzy:</strong> 600K 이상 상시 개방 (24/7).</p>
+              <p class="text-slate-400 leading-relaxed">
+                선착순(FCFS) 적용. 최초 도착 인원은 문파 채널 공지 및 문파 파티를 생성하여 입장권 낭비를 방지해야 합니다.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <div class="flex justify-between items-center">
+                <span class="text-sm font-bold text-white">MS12</span>
+                <span class="px-2 py-0.5 bg-cyan-950 text-cyan-300 border border-cyan-800 rounded font-semibold">650K↑</span>
+              </div>
+              <p class="text-amber-400 font-bold">• Fury: Brother Jiu 전용</p>
+              <p class="text-slate-300"><strong class="text-white">• Frenzy:</strong> 650K 이상 선착순.</p>
+              <p class="text-slate-400 leading-relaxed">
+                도착 시 채널 메시지 및 파티 생성 필수. 기준 미달자는 보스 공략 또는 ADC I, II, III에서 경험치를 획득하세요.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- SP (Secret Peak) Section -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+            <h2 class="text-lg font-bold text-cyan-400 flex items-center gap-2">
+              <span>🔶</span> 비정봉(SP) 파밍 규정
+            </h2>
+            <span class="text-xs text-slate-400">SP10~12 이용 시 잔여석 확인용 문파 파티 생성 필수</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 text-xs">
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <span class="text-sm font-bold text-white block">SP7–8 & SP9</span>
+              <div class="space-y-1 text-slate-300">
+                <p>• <strong>SP7–8:</strong> 선착순(FCFS), PS 제한 없음</p>
+                <p>• <strong>SP9 BOSS:</strong> FFA (자유 루팅)</p>
+                <p>• <strong>SP9 2층:</strong> 450K↑ (자리당 최대 2인, 선착순)</p>
+                <p>• <strong>SP9 1층:</strong> 400K↑ (자리당 최대 2인, 선착순)</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <span class="text-sm font-bold text-white block">SP10</span>
+              <div class="space-y-1 text-slate-300">
+                <p>• <strong>SP10 BOSS:</strong> 본문파 전용 소속</p>
+                <p>• <strong>SP10-10F 보스:</strong> 520K↑</p>
+                <p>• <strong>SP10-2F 선공 몬스터:</strong> 520K↑</p>
+                <p>• <strong>SP10-2F 비선공 몬스터:</strong> 470K↑</p>
+                <p class="text-slate-400 text-[11px]">*기준 미달자는 SP10-1층에서 수련</p>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+              <span class="text-sm font-bold text-white block">SP11 & SP12</span>
+              <div class="space-y-1 text-slate-300">
+                <p>• <strong>SP11 BOSS / AFK:</strong> 550K↑ (24/7)</p>
+                <p>• <strong>SP12 BOSS / AFK:</strong> 600K↑ (24/7)</p>
+                <p class="text-slate-400 leading-relaxed text-[11px]">
+                  입장 전 채널 문의 필수. 최초 도착자는 좌표 공유. 미달자는 자격자 도착 시 즉시 양보.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-amber-950/20 border border-amber-800/40 rounded-xl text-xs text-amber-300/90 leading-relaxed">
+            <strong>※ 전 층 공통 보스 예외 규정:</strong> 적군이 SP 보스를 공격하고 있는 경우, 전투력 미달 문파원도 보스 FFA에 참여할 수 있습니다. 단, 규칙 악용 방지를 위해 적이 보스를 공격 중이라는 스크린샷 증거를 반드시 제출해야 합니다.
+          </div>
+        </div>
+
+        <!-- Clarification Examples & Priority Logic -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
+          <h2 class="text-lg font-bold text-indigo-300 flex items-center gap-2 border-b border-slate-800 pb-3">
+            <span>⚖️</span> 자리 분쟁 및 우선권 6대 원칙 (Clarification Examples)
+          </h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="font-bold text-cyan-300 mb-1">① 자격 충족자 vs 자격 충족자</div>
+              <p class="text-slate-300">선착순(FCFS)이 적용됩니다.</p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="font-bold text-cyan-300 mb-1">② 자격 충족자 vs 자격 미달자</div>
+              <p class="text-slate-300">자격 충족 문파원이 우선권을 가집니다.</p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="font-bold text-cyan-300 mb-1">③ 본문파 미달 vs 연맹 미달</div>
+              <p class="text-slate-300 leading-relaxed">
+                본문파 인원의 전투력이 <strong>30K 이상 더 높을 경우에만</strong> 우선권을 갖습니다. 차이가 30K 미만이면 선착순(FCFS)이 적용됩니다.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="font-bold text-cyan-300 mb-1">④ 양보 요구 자격</div>
+              <p class="text-slate-300">자격 미달 문파원은 본문파 미달 문파원에게 자리를 요구할 수 없으며 오직 자격 충족자만 요구 가능합니다.</p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="font-bold text-rose-300 mb-1">⑤ 자리 탈환 실패 페널티</div>
+              <p class="text-slate-300 leading-relaxed">
+                자리를 차지하려는 인원이 기존 점유자를 처치하려다 본인이 사망한 경우, 해당 자리에 대한 우선권은 즉시 박탈(소멸)됩니다.
+              </p>
+            </div>
+
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="font-bold text-rose-300 mb-1">⑥ 규칙 맹점 악용 금지</div>
+              <p class="text-slate-300 leading-relaxed">
+                고투력 인원이 자리를 강제로 비우게 한 뒤 해당 자리를 기준 미달 인원에게 넘겨주는 행위 등 꼼수/악용은 엄격히 금지됩니다.
+              </p>
+            </div>
+          </div>
+
+          <!-- Q&A Box -->
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 text-xs space-y-2">
+            <p class="text-cyan-300 font-bold">
+              Q: 출근 등으로 아침 일과를 빨리 끝내야 할 때, 처치(PK)당할 위험을 감수하고 SP10 빈자리에서 자사(AFK)를 돌려도 되나요?
+            </p>
+            <p class="text-slate-300 pl-4 border-l-2 border-cyan-500">
+              <strong>A: 네, 가능합니다.</strong> 규정된 우선권 및 양보 절차(귓속말 및 자격자 우선 룰)를 따르는 한 허용됩니다.
+            </p>
+          </div>
+        </div>
+
+        <!-- Cross-Server Support Teams -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
+          <div class="border-b border-slate-800 pb-3">
+            <h2 class="text-lg font-bold text-cyan-400 flex items-center gap-2">
+              <span>🛡️</span> 지원팀 명단 (Support Teams)
+            </h2>
+            <p class="text-xs text-slate-400 mt-1">
+              비곡 점령전 / 제단 지원 / WB 지원 / 성소 탈환 지원 (타 서버 지원 시 Brother Jiu 지휘 하에 이동)
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="text-cyan-400 font-bold border-b border-slate-800 pb-1.5 mb-2">PT1</div>
+              <div class="text-slate-300 space-y-0.5 leading-tight">
+                Mjtkute, 博嘉, 勇敢の盾, 一X Storm X一, Toria Wolf, 最粗的戀人9453, zTheodorEz, JohnStriderⓧ, JolieStríder, 靈靈漆, 火輪滑板, 傑瑞
+              </div>
+            </div>
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="text-cyan-400 font-bold border-b border-slate-800 pb-1.5 mb-2">PT2</div>
+              <div class="text-slate-300 space-y-0.5 leading-tight">
+                莫芮, 最粗的戀人9453, 火輪滑板
+              </div>
+            </div>
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="text-cyan-400 font-bold border-b border-slate-800 pb-1.5 mb-2">PT3</div>
+              <div class="text-slate-300 space-y-0.5 leading-tight">
+                一X Storm X一, Mjtkute, MyFragTAO
+              </div>
+            </div>
+            <div class="bg-slate-950 p-3.5 rounded-xl border border-slate-800">
+              <div class="text-cyan-400 font-bold border-b border-slate-800 pb-1.5 mb-2">PT4</div>
+              <div class="text-slate-300 space-y-0.5 leading-tight">
+                이세탄's, sLiM, KєT, 愛丶Syla ツ, 까르르, AthenaX2020, Kiм, BadMan001, BossCzeth, 아란이, Amat Sure, thnksgrrdwyy, Chloe Hong, DAequalizerX, 快乐丶Lee
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Column 2: Schedules, WB/Valley Rules, Admin Guidelines -->
+      <div class="space-y-6">
+
+        <!-- 311 Expedition Schedule -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4">
+          <div class="border-b border-slate-800 pb-3">
+            <h2 class="text-lg font-bold text-amber-400 flex items-center gap-2">
+              <span>⏱️</span> 【311 원정대 → 322】 일정표
+            </h2>
+            <p class="text-xs text-rose-400 font-semibold mt-1">※ 311 서버 침공 시 즉시 복귀하여 방어/처치 최우선</p>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-start justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <span class="font-bold text-cyan-300 w-14">21:00</span>
+              <span class="text-slate-300 flex-1">MS11 → MS12 이동 후 180마리 처치 완료</span>
+            </div>
+            <div class="flex items-start justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <span class="font-bold text-cyan-300 w-14">21:45</span>
+              <span class="text-slate-300 flex-1">SP10 및 대·중·소 소환 → 황금(Yellow) 보스</span>
+            </div>
+            <div class="flex items-start justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <span class="font-bold text-cyan-300 w-14">22:00</span>
+              <span class="text-slate-300 flex-1">적 있을 시 SP10 포기 / 없을 시 SP10 빨강 보스</span>
+            </div>
+            <div class="flex items-start justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <span class="font-bold text-cyan-300 w-14">22:07</span>
+              <span class="text-slate-300 flex-1 font-mono text-[11px]">W1 → W7 → W2 → W3 → L1W1 → L1W3</span>
+            </div>
+            <div class="flex items-start justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <span class="font-bold text-cyan-300 w-14">00:01</span>
+              <span class="text-slate-300 flex-1 font-mono text-[11px]">W8 → W4 → W5 → W6 → L1W2</span>
+            </div>
+            <div class="flex items-start justify-between bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+              <span class="font-bold text-cyan-300 w-14">00:20</span>
+              <span class="text-slate-300 flex-1">SP11 → SP12</span>
+            </div>
+          </div>
+
+          <div class="bg-rose-950/20 border border-rose-900/40 rounded-xl p-3 text-xs text-rose-300 space-y-1">
+            <p>• <strong>상자 루팅 엄격 금지</strong> (Do not open any boxes)</p>
+            <p>• <strong>SP 7, 8, 9층 미션은 건너뜁니다</strong> (Abandoned)</p>
+          </div>
+        </div>
+
+        <!-- WB & Valley & Loot Distribution Rules -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4 text-xs">
+          <h2 class="text-lg font-bold text-cyan-400 border-b border-slate-800 pb-3 flex items-center gap-2">
+            <span>📦</span> 보스 / 비곡 / 상자 분배 규정
+          </h2>
+
+          <div class="space-y-3 text-slate-300 leading-relaxed">
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+              <strong class="text-white block">월드보스(WB) 분배 및 5분 지각 룰</strong>
+              <p>• WB 분배 목록을 따르며, 공지 전에는 FFA가 적용됩니다. (Brother Jiu 주관)</p>
+              <p>• 사전 통보 없이 담당자가 <strong>5분 이상 지각</strong> 시 현장 방어 중인 전원이 상자를 FFA로 획득합니다. 사전 통보 시에도 방어 지원 인원을 배치해야 합니다.</p>
+              <p>• 흑철(Darksteel) 수익 분배는 담당자(Holder)의 재량에 따라 진행됩니다.</p>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+              <strong class="text-white block">서버별 보스 출현 시 상자 권한</strong>
+              <p>• <strong>본문파 + 430K~450K & 155Lv↑:</strong> 파티 최고 투력자 혹은 지정인이 분배 결정 또는 FFA.</p>
+              <p>• <strong>타 서버 보스:</strong> 퀘스트 완료는 가능하나 해당 서버 규칙을 준수해야 하며 비상 상황 외 상자 개봉 금지.</p>
+              <p>• <strong>311 보스:</strong> 연맹원 퀘스트 가능, 상자는 본문파 소속 (Brother Jiu 결정/당일 배분, 부재 시 달리기 게임 등 활용).</p>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-1">
+              <strong class="text-white block">제단(Altar) 및 용원(LW) 교대 방어</strong>
+              <p>• 제단 방어가 최우선입니다.</p>
+              <p>• 평화 시 인원의 50%는 30분간 제단 방어, 50%는 30분간 LW 참여 후 <strong>22:30(잠정)</strong>에 교대합니다.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Clan Events & Summons -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-4 text-xs">
+          <h2 class="text-lg font-bold text-cyan-400 border-b border-slate-800 pb-3 flex items-center gap-2">
+            <span>📅</span> 주간 일정, 문파 기부 및 소환
+          </h2>
+
+          <div class="space-y-2.5">
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+              <div class="flex justify-between font-bold text-slate-200">
+                <span>토요일 CE (문파 원정)</span>
+                <span class="text-cyan-400">20:30</span>
+              </div>
+              <p class="text-slate-400 mt-1">CE 종료 후 21:00경 주간 소환 (120 + 141 + 143 + 150)</p>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+              <div class="flex justify-between font-bold text-slate-200">
+                <span>일요일 CC (문파 도전)</span>
+                <span class="text-cyan-400">20:30</span>
+              </div>
+              <p class="text-slate-400 mt-1">CC 종료 후 20:40경 주간 소환 (H5 + H4 + H3 + L1W1~L1W3)</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2 text-slate-400 leading-relaxed">
+            <p>• <strong>AlySinzera</strong>가 CE 진행 문파(본문파 vs 부문파) 및 금화(Gold) 기부 방식(문파 직접 기부 vs 거래소 구매)을 사전 공지하므로 우편을 확인하세요.</p>
+            <p>• <strong>Jayson06</strong>이 매주 소환물 담당자를 편성하여 <strong>매주 수요일</strong>에 공지합니다. 순번제로 진행되며 WB 담당자는 역할에 따라 더 자주 배정될 수 있습니다.</p>
+          </div>
+        </div>
+
+        <!-- Code of Conduct & Penalties -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 md:p-6 shadow-md space-y-3 text-xs">
+          <h2 class="text-lg font-bold text-slate-300 border-b border-slate-800 pb-3 flex items-center gap-2">
+            <span>📜</span> 연맹 공통 수칙 및 규정 위반 제재
+          </h2>
+          <ul class="space-y-2 text-slate-300 leading-relaxed">
+            <li>• <strong>일반 구역(Common Area) 자사/채집:</strong> 제한 없음. 자리 분쟁으로 연맹원에게 살생 모드(PK)를 켜지 마시고 살생 모드는 적군에게만 사용하세요. 빈자리가 있다면 고의로 연맹원을 처치하지 마십시오.</li>
+            <li>• <strong>MS/SP 전 층 채집:</strong> 색상 무관 선착순. 부계정과의 자원 경쟁에 대한 불만은 접수받지 않습니다.</li>
+            <li>• <strong>비곡 흑철 채광:</strong> 각 홀더가 지정한 규칙 준수 (비곡 게시판 공지 참조).</li>
+            <li>• <strong>이의 제기 기준:</strong> 반드시 스크린샷 또는 동영상 증거를 첨부해야 합니다.</li>
+            <li>• <strong>처벌:</strong> 규정 위반 시 경고 부여 → 반복 위반 시 WB 참가 자격 박탈 및 급여 차압 → 지속 위반 시 <strong>문파 영구 추방</strong>.</li>
+            <li>• <strong>서버 통합 배려:</strong> 인원이 늘어난 만큼 서로 배려하고 협력해 주시기 바랍니다.</li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center text-xs text-slate-400 border-t border-slate-800 pt-5 pb-8">
+      311 ALLIANCE STRATEGIC OPERATIONAL DASHBOARD • All Rules and Schedules Applied
+    </footer>
+
+  </div>
+
+</body>
+</html>
